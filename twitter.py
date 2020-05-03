@@ -19,12 +19,16 @@ class Twitter:
                         resource_owner_secret=self.access_token_secret)
 
     def post_tweet(self, status):
+        parameters = {
+            'status': status
+        }
+
         url = "{}1.1/statuses/update.json".format(self.base_url)
-        resp = self.session.post(url, {'status': status})
+        resp = self.session.post(url, params = parameters)
         print(resp.status_code)
 
 twitter = Twitter()
-
+tweet = "final test tweet so I stop junking up the feed"
 twitter.post_tweet(tweet)
 
 

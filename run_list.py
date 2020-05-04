@@ -1,18 +1,39 @@
 import csv
+import json
 
-file = 'files/quotes.csv'
-#open the csv file
-f = open(file, 'rt')
-number = 1
+class RunList:
+    csvfile = 'files/quotes.csv'
+    jsonfile = 'files/quotes.json'
 
-try:
-    reader = csv.reader(f)
-#    row = reader[number]
-#    print(row)
-    list = []
-    for row in reader:
-        list.append(row)
-    print(f"{list[number][0]}\n--{list[number][1]}")
+    def runit(self):
+        with open(self.csvfile, encoding='utf-8') as c:
+            reader = csv.DictReader(c)
 
-finally:
-    f.close()
+            json_list = []
+            for row in reader:
+                json_list.append(row)
+
+        file = open(self.jsonfile, 'w', encoding="UTF-8")
+        file.write(json.dumps(json_list))
+        file.close
+
+#with open(jsonfile, 'w') as j:
+#    json.dumps(rows)
+
+#finally:
+#    c_file.close()
+#    j_file.close()
+
+#with open(jsonfile, 'r') as f:
+#    data = f.read().replace('\n','')
+#    j_out = json.loads(str('data'))
+
+#   print(data)
+
+runlist = RunList()
+runlist.runit()
+
+number = 2
+with open('files/quotes.json') as json_file:
+    data = json.load(json_file)
+    print(f"{data[number]['quote']}\n--{data[number]['author']}")

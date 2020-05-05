@@ -3,3 +3,4 @@ venv
 .csv
 __pycache__/
 files/
+.p

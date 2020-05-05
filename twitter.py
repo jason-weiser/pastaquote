@@ -27,8 +27,3 @@ class Twitter:
         resp = self.session.post(url, params = parameters)
         print(resp.status_code)
 
-twitter = Twitter()
-tweet = "final test tweet so I stop junking up the feed"
-twitter.post_tweet(tweet)
-
-

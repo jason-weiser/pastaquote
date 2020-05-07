@@ -1,0 +1,27 @@
+import random
+import json
+import os
+from run_list import RunList
+
+with open('/home/jason/python/twitterbot/data/quotes.json',"r+") as json_file:
+    n = 0
+    data = json.load(json_file)
+    temp_data = data
+    n = random.randint(0,len(temp_data)-1)
+    print(f"n equals {n}")
+    tweet = "{}\n\t---{}".format(data[n]['quote'],data[n]['author'])
+    print(tweet)
+    temp_data.pop(n)
+
+os.remove('/home/jason/python/twitterbot/data/quotes.json')
+with open('/home/jason/python/twitterbot/data/quotes.json', 'w') as f:
+    if len(temp_data) == 0:
+        
+    json.dump(data, f, indent=4)
+
+#    logging.info("Tweeted \'" + tweet + "\'")
+#            data = json.load(json_file)
+#        print(f"There are now {len(data)} items left in data")
+#if len(data) == 0:
+ #               runlist.runit()
+

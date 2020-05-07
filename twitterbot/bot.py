@@ -41,6 +41,11 @@ parent_dir = current_dir.resolve().parents[1]
 pickle_dir = os.path.join(parent_dir, "data/number.p")
 mode_file = os.path.join(parent_dir, "data/mode.p")
 
+##Define objects
+
+runlist = RunList(parent_dir)
+twitter = Twitter()
+
 ## Program run
 
 def make_pickle():
@@ -63,12 +68,16 @@ def choose_mode():
 def tweet_it():
     w_mode = pickle.load(open(mode_file,"rb"))
     if w_mode == 2:
-        print(tweet_types.s_run(parent_dir))
+        tweet = tweet_types.s_run(parent_dir)
+        logging.info("Tweet attempted: {}.\nResponse: {}".format(tweet, \
+                        twitter.post_tweet(tweet)))
     elif w_mode == 1:
-           print(tweet_types.r_run(parent_dir))
+        tweet = tweet_types.r_run(parent_dir)
+        logging.info("Tweet attempted: {}.\nResponse: {}".format(tweet, \
+                        twitter.post_tweet(tweet)))
 def main():
-    runlist = RunList(parent_dir)
-    twitter = Twitter()
+#    runlist = RunList(parent_dir)
+#    twitter = Twitter()
     #ensure that there is a mode file or create one with argparse
     #also makes new json because you will have an incomplete file
     #when switching from random to sequential

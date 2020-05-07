@@ -24,5 +24,5 @@ class Twitter:
 
         url = "{}1.1/statuses/update.json".format(self.base_url)
         resp = self.session.post(url, params = parameters)
-        print(resp.status_code)
+        return resp.status_code
 

@@ -13,7 +13,7 @@ class RunList:
     def runit(self):
         working_csv = os.path.join(self.parent, self.csvfile)
         working_json = os.path.join(self.parent, self.jsonfile)
-        with open(working_csv) as c:
+        with open(working_csv, 'r') as c:
             reader = csv.DictReader(c)
 
             json_list = []

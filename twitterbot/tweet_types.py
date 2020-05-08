@@ -16,7 +16,7 @@ def r_run(parent_dir):
         runlist = RunList(parent_dir)
         runlist.runit()
     else:
-        with open(os.path.join(parent_dir,'data/quotes.json'),"w") as f:
+        with open(os.path.join(parent_dir,'data/quotes.json'), "w") as f:
             json.dump(working_data, f, indent=4)
     return tweet
 

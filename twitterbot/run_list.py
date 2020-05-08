@@ -13,14 +13,14 @@ class RunList:
     def runit(self):
         working_csv = os.path.join(self.parent, self.csvfile)
         working_json = os.path.join(self.parent, self.jsonfile)
-        with open(working_csv, encoding='utf-8') as c:
+        with open(working_csv) as c:
             reader = csv.DictReader(c)
 
             json_list = []
             for row in reader:
                 json_list.append(row)
 
-        file = open(working_json, 'w', encoding="utf-8")
+        file = open(working_json, 'w')
         file.write(json.dumps(json_list, indent=4))
         file.close
 

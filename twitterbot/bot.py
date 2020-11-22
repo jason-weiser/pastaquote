@@ -27,7 +27,7 @@ args=parser.parse_args()
 
 ## Logging
 
-logging_file = os.path.join(os.getenv('HOME'),'twitterbot.log')
+logging_file = os.path.join(os.environ['HOME'],'twitterbot.log')
 
 logging.basicConfig(
     level=logging.INFO,
@@ -70,12 +70,12 @@ def tweet_it():
     w_mode = pickle.load(open(mode_file,"rb"))
     if w_mode == 2:
         tweet = tweet_types.s_run(parent_dir)
-        logging.info("Tweet attempted: {}.\nResponse: {}".format(tweet, \
-                        twitter.post_tweet(tweet)))
+        logging.info("Tweet attempted: {}.\nResponse: {}" \
+                    .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
     elif w_mode == 1:
         tweet = tweet_types.r_run(parent_dir)
-        logging.info("Tweet attempted: {}.\nResponse: {}".format(tweet, \
-                        twitter.post_tweet(tweet)))
+        logging.info("Tweet attempted: {}.\nResponse: {}" \
+                    .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
 def main():
 #    runlist = RunList(parent_dir)
 #    twitter = Twitter()

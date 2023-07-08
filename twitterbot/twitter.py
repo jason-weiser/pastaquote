@@ -1,6 +1,7 @@
 from pathlib import Path
 import dotenv
 import os
+from mastodon import Mastodon
 from requests_oauthlib import OAuth1Session
 
 
@@ -32,3 +33,12 @@ class Twitter:
         resp = self.session.post(url, params = parameters)
         return resp.status_code
 
+class Masto:
+    base_url = os.getenv('MASTO_BASE_URL')
+
+    def __init__(self):
+        self.masto = Mastodon(os.getenv('MASTO_ACCESS_TOKEN'),\
+            os.getenv('MASTO_BASE_URL'))
+
+    def tootit(self, status):
+        return self.masto(status)

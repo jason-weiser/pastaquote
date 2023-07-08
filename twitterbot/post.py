@@ -57,10 +57,15 @@ def tweet_it():
         tweet = tweet_types.s_run(parent_dir)
         logging.info("Tweet attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
+        logging.info("Post attempted: {}.\nResponse: {}" \
+                    .format(tweet.rstrip('\n'), twitter.Masto.tootit(tweet)))
     elif w_mode == 1:
         tweet = tweet_types.r_run(parent_dir)
         logging.info("Tweet attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
+        logging.info("Post attempted: {}.\nResponse: {}" \
+                    .format(tweet.rstrip('\n'), twitter.Masto.tootit(tweet)))
+                    
 def main():
 #    runlist = RunList(parent_dir)
 #    twitter = Twitter()

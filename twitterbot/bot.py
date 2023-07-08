@@ -7,7 +7,8 @@ import sys
 import argparse
 import tweet_types
 from pathlib import Path
-from twitter import Twitter
+from platforms import Twitter
+from platforms import Masto
 from run_list import RunList
 import logging
 
@@ -46,6 +47,7 @@ mode_file = os.path.join(parent_dir, "data/mode.p")
 
 runlist = RunList(parent_dir)
 twitter = Twitter()
+masto = Masto()
 
 ## Program run
 
@@ -72,10 +74,14 @@ def tweet_it():
         tweet = tweet_types.s_run(parent_dir)
         logging.info("Tweet attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
+        logging.info("Post attempted: {}.\nResponse: {}" \
+                    .format(tweet.rstrip('\n'), masto.tootit(tweet)))
     elif w_mode == 1:
         tweet = tweet_types.r_run(parent_dir)
-        logging.info("Tweet attempted: {}.\nResponse: {}" \
+        logging.info("Post attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
+        logging.info("Post attempted: {}.\nResponse: {}" \
+                    .format(tweet.rstrip('\n'), masto.tootit(tweet)))
 def main():
 #    runlist = RunList(parent_dir)
 #    twitter = Twitter()
@@ -89,7 +95,7 @@ def main():
     #this makes a number file
     if not os.path.isfile(pickle_dir):
         make_pickle()
-        logging.info("Pickle made and set to zero")
+        logging.info("Numbering started and set to zero")
     #converts new csv list to json
     if args.process_list:
         runlist.runit()

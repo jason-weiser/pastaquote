@@ -6,3 +6,4 @@ files/
 .p
 .venv
 .vscode
+config.json

@@ -9,3 +9,5 @@ files/
 twitterbot.log
 data/config.yaml
 config.yaml
+quotes.json
+quotes.csv

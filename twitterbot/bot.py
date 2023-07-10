@@ -45,7 +45,7 @@ logging.basicConfig(
 )
 
 ## Load the config
-with open(os.path.join(parent_dir, 'data/config.yaml')) as config_yml:
+with open('config.yaml') as config_yml:
     config = yaml.safe_load(config_yml)
 options = config['SETUP']
 twitter_options = config['TWITTER']
@@ -88,7 +88,7 @@ def main():
     if options['TYPE'] != "sequential" and options['TYPE'] != "random":
         print("""
         You need to choose the order in which the list will run
-        Please edit the config file in ../data/config.yaml
+        Please edit the config file in config.yaml
         """)
     #if there isn't a numbering file in place and you want sequential tweets
     #this makes a number file
@@ -117,3 +117,4 @@ if __name__ == "__main__":
     main()
 
 ##TODO: remove secrets from github
+##TODO: clean up sequencing from old version

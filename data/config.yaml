@@ -1,0 +1,19 @@
+#Sequential posts or random?
+#e.g. would you like the posts to loop beginning-to-end in order,
+#or would you like it to choose a post randomly each time and not use that
+#post again until the list has run through?
+#options are "sequential" or "random"
+SETUP:
+  TYPE: random
+
+TWITTER:
+  ENABLE_TWITTER: False
+  TWITTER_CONSUMER_KEY: "4TC5qbvvumcRsnb7Wts7tid8B"
+  TWITTER_CONSUMER_SECRET: "FqT1w2lwg0WmURODZFoBG2rGGiBhAoppZUGcucgRsy2w68QQaU"
+  TWITTER_ACCESS_TOKEN: "788434829461323781-lmmcdu2EPaHcnKOEpzhonT22lhI9RoD"
+  TWITTER_ACCESS_TOKEN_SECRET: "Nrk2LR4GRq0jiG4gOz24Z2H2mbFggT8Cc81UvE6fSWxQP"
+
+MASTODON:
+  ENABLE_MASTODON: True
+  MASTO_ACCESS_TOKEN: "kcyWbK4soVvdNYB2SAdzFoOcg2dyDDt7HYC646Ra_Mc"
+  MASTO_BASE_URL: "https://weiser.social"

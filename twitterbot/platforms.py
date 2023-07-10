@@ -1,21 +1,20 @@
 from pathlib import Path
-#import dotenv
-import configparser
+import yaml
 import os
 from mastodon import Mastodon
 from requests_oauthlib import OAuth1Session
 
-
+## Define directories and open up config.yaml
 current_d = Path(__file__)
 parent_d = current_d.resolve().parents[1]
-config = configparser.ConfigParser()
-config.read(os.path.join(parent_d, 'data/config.ini'))
+with open(os.path.join(parent_d, 'data/config.yaml')) as config_yml:
+    config = yaml.safe_load(config_yml)
 twitter_cred = config['TWITTER']
 mastodon_cred = config['MASTODON']
 #dotenv.load_dotenv(os.path.join(parent_d, 'data/config.ini'), override=True)
 
 
-
+## What makes the magic happen re: tweets
 class Twitter:
     base_url = 'https://api.twitter.com/'
 
@@ -38,11 +37,11 @@ class Twitter:
         resp = self.session.post(url, params = parameters)
         return resp.status_code
 
+## What makes the magic happen re:toots
 class Masto:
-
     def __init__(self):
-        self.masto = Mastodon(mastodon_cred['MASTO_ACCESS_TOKEN'],\
-            os.getenv['MASTO_BASE_URL'])
+        self.masto = Mastodon(access_token=mastodon_cred['MASTO_ACCESS_TOKEN'], \
+            api_base_url=mastodon_cred['MASTO_BASE_URL'])
 
     def tootit(self, status):
-        return self.masto(status)
+        return self.masto.toot

@@ -6,5 +6,5 @@ files/
 .p
 .venv
 .vscode
-config.yaml
 twitterbot.log
+data/config.yaml

@@ -8,3 +8,4 @@ files/
 .vscode
 twitterbot.log
 data/config.yaml
+config.yaml

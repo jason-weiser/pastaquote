@@ -7,7 +7,7 @@ SETUP:
   TYPE: random
 #The full path of the csv of the posts you want to make
 #TODO: make it possible to make this a webpage
-  CSV_LOCATION: "/home/jason/python/twitterbot/data/quotes.csv"
+  CSV_LOCATION: "/home/jason/quotes.csv"
 
 TWITTER:
   ENABLE_TWITTER: False

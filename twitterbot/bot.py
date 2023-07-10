@@ -48,7 +48,8 @@ logging.basicConfig(
 with open(os.path.join(parent_dir, 'data/config.yaml')) as config_yml:
     config = yaml.safe_load(config_yml)
 options = config['SETUP']
-
+twitter_options = config['TWITTER']
+mastodon_options = config['MASTODON']
 
 ##Define objects
 
@@ -62,19 +63,21 @@ def make_pickle():
     initial_num = 0
     pickle.dump(initial_num, open(pickle_dir,"wb"))
 
+def actually_post(tweet):
+        if twitter_options['ENABLE_TWITTER'] == True:
+            logging.info("Tweet attempted: {}.\nResponse: {}" \
+                    .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
+        elif mastodon_options['ENABLE_MASTODON'] == True:
+            logging.info("Post attempted: {}.\nResponse: {}" \
+                    .format(tweet.rstrip('\n'), masto.tootit(tweet)))
+
 def tweet_it():
     if options['TYPE'] == "sequential":
-        tweet = tweet_types.s_run(parent_dir)
-        logging.info("Tweet attempted: {}.\nResponse: {}" \
-                    .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
-        logging.info("Post attempted: {}.\nResponse: {}" \
-                    .format(tweet.rstrip('\n'), masto.tootit(tweet)))
+        post_content = tweet_types.s_run(parent_dir)
+        actually_post(post_content)
     elif options['TYPE'] == "random":
-        tweet = tweet_types.r_run(parent_dir)
-        logging.info("Post attempted: {}.\nResponse: {}" \
-                    .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
-        logging.info("Post attempted: {}.\nResponse: {}" \
-                    .format(tweet.rstrip('\n'), masto.tootit(tweet)))
+        post_content = tweet_types.r_run(parent_dir)
+        actually_post(post_content)
 
 def main():
 #    runlist = RunList(parent_dir)
@@ -112,3 +115,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+##TODO: remove secrets from github

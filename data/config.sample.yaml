@@ -5,7 +5,8 @@ SETUP:
 #post again until the list has run through?
 #options are "sequential" or "random"
   TYPE: random
-#The full path of the csv of the posts you want to make
+#The full path of the csv of the posts you want to make.
+#I use my home folder but you do you. Must have read access.
   CSV_LOCATION: ""
 
 TWITTER:

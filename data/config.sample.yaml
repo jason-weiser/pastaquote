@@ -1,0 +1,19 @@
+#Sequential posts or random?
+#e.g. would you like the posts to loop beginning-to-end in order,
+#or would you like it to choose a post randomly each time and not use that
+#post again until the list has run through?
+#options are "sequential" or "random"
+SETUP:
+  TYPE: random
+
+TWITTER:
+  ENABLE_TWITTER: False
+  TWITTER_CONSUMER_KEY: ""
+  TWITTER_CONSUMER_SECRET: ""
+  TWITTER_ACCESS_TOKEN: ""
+  TWITTER_ACCESS_TOKEN_SECRET: ""
+
+MASTODON:
+  ENABLE_MASTODON: True
+  MASTODON_ACCESS_TOKEN: ""
+  MASTO_BASE_URL: ""

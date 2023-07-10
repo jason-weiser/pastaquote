@@ -8,7 +8,7 @@ from requests_oauthlib import OAuth1Session
 ## Define directories and open up config.yaml
 current_d = Path(__file__)
 parent_d = current_d.resolve().parents[1]
-with open(os.path.join(parent_d, 'data/config.yaml')) as config_yml:
+with open('config.yaml') as config_yml:
     config = yaml.safe_load(config_yml)
 
 mastodon_cred = config['MASTODON']
@@ -43,10 +43,6 @@ class Twitter:
 class Masto:
     api_url = 'https://weiser.social/api/v1/statuses'
 
-    
-    def __init__(self):
-        self.auth = {'Authorization': 'Bearer '+ mastodon_cred['MASTO_ACCESS_TOKEN']}
-
     def tootit(self, status):
         auth = {
             'Authorization': 'Bearer {}'.format(mastodon_cred['MASTO_ACCESS_TOKEN'])
@@ -55,7 +51,4 @@ class Masto:
             'status': status
         }
         resp = requests.post(self.api_url, data=parameters, headers=auth)
-        print(resp)
-
-
-#TODO: update mastodon with https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj
+        return(resp.status_code)

@@ -27,9 +27,15 @@ parser.add_argument("--mode", help="change the mode (random v sequential)", \
                     action="store_true", dest="mode")
 args=parser.parse_args()
 
+
+## Find parent directory
+current_dir = Path(__file__)
+parent_dir = current_dir.resolve().parents[1]
+pickle_dir = os.path.join(parent_dir, "data/number.p")
+
 ## Logging
 
-logging_file = os.path.join(os.environ['HOME'],'twitterbot.log')
+logging_file = 'twitterbot.log'
 
 logging.basicConfig(
     level=logging.INFO,
@@ -37,11 +43,6 @@ logging.basicConfig(
     filename=logging_file,
     filemode='a+',
 )
-
-## Find parent directory
-current_dir = Path(__file__)
-parent_dir = current_dir.resolve().parents[1]
-pickle_dir = os.path.join(parent_dir, "data/number.p")
 
 ## Load the config
 with open(os.path.join(parent_dir, 'data/config.yaml')) as config_yml:
@@ -51,7 +52,7 @@ options = config['SETUP']
 
 ##Define objects
 
-runlist = RunList(parent_dir)
+runlist = RunList(parent_dir, options['CSV_LOCATION'])
 twitter = Twitter()
 masto = Masto()
 

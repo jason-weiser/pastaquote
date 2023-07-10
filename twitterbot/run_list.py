@@ -4,11 +4,11 @@ from pathlib import Path
 import os
 
 class RunList:
-    csvfile = 'data/quotes.csv'
     jsonfile = 'data/quotes.json'
 
-    def __init__(self, parent):
+    def __init__(self, parent, csv_location):
         self.parent = parent
+        self.csv_location = csv_location
 
     def runit(self):
         working_csv = os.path.join(self.parent, self.csvfile)
@@ -25,5 +25,4 @@ class RunList:
         file.close
 
 if __name__ == "__main__":
-    runlist = RunList('/home/jason/python/twitterbot/')
-    runlist.runit()
+    pass

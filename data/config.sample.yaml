@@ -1,10 +1,12 @@
+SETUP:
 #Sequential posts or random?
 #e.g. would you like the posts to loop beginning-to-end in order,
 #or would you like it to choose a post randomly each time and not use that
 #post again until the list has run through?
 #options are "sequential" or "random"
-SETUP:
   TYPE: random
+#The full path of the csv of the posts you want to make
+  CSV_LOCATION: ""
 
 TWITTER:
   ENABLE_TWITTER: False

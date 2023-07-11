@@ -55,7 +55,7 @@ mastodon_options = config['MASTODON']
 
 ##Define objects
 
-runlist = RunList(parent_dir, options['CSV_LOCATION'])
+runlist = RunList(parent_dir, options['CSV_LOCATION'], logging_file)
 twitter = Twitter()
 masto = Masto()
 

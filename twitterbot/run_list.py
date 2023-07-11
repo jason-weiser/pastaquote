@@ -1,22 +1,28 @@
 import csv
 import json
-import codecs
 import pandas as pd
+import logging
 from pathlib import Path
+from validation import connection_validator
 import os
 
 class RunList:
     jsonfile = 'data/quotes.json'
-    def __init__(self, parent, csv_location):
+    def __init__(self, parent, csv_location, log_location):
         self.parent = parent
         self.csv_location = csv_location
 
     def runit(self):
         if self.csv_location.startswith("http://") or \
             self.csv_location.startswith("https://"):
-            df = pd.read_csv(self.csv_location)
             working_csv = os.path.join(self.parent,'data/cached.csv')
-            df.to_csv(working_csv,index=False,header=True)
+            if connection_validator(self.csv_location) == 200:
+                df = pd.read_csv(self.csv_location)
+                df.to_csv(working_csv,index=False,header=True)
+            else:
+                logging.info("""Issue connecting to CSV URL: {}. Falling back by default
+                to cached CSV file if it exists.""".\
+                    format(connection_validator(self.csv_location)))
             with open(working_csv, 'r') as c:
                 reader = csv.DictReader(c)
                 json_list = []
@@ -39,4 +45,4 @@ class RunList:
         file.close
 
 if __name__ == "__main__":
-    RunList('/home/jason/python/twitterbot/', '/home/jason/quotes.csv').runit()
+    RunList('/home/jason/python/twitterbot/', '/home/jason/quotes.csv','data/twitterbot.log').runit()

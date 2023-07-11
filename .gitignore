@@ -12,3 +12,4 @@ config.yaml
 quotes.json
 quotes.csv
 data/
+number.p

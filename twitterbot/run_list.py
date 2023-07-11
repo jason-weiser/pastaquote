@@ -1,17 +1,22 @@
 import csv
 import json
+import pandas
 from pathlib import Path
 import os
 
 class RunList:
     jsonfile = 'data/quotes.json'
-
     def __init__(self, parent, csv_location):
         self.parent = parent
         self.csv_location = csv_location
 
     def runit(self):
-        working_csv = os.path.join(self.parent, self.csvfile)
+        if self.csv_location.startswith("http://") or \
+            self.csv_location.startswith("https://"):
+            working_csv = pandas.read(self.csv_location)
+        else:
+            working_csv = self.csv_location
+        
         working_json = os.path.join(self.parent, self.jsonfile)
         with open(working_csv, 'r') as c:
             reader = csv.DictReader(c)
@@ -25,4 +30,4 @@ class RunList:
         file.close
 
 if __name__ == "__main__":
-    pass
+    RunList('/home/jason/python/twitterbot/', '/home/jason/quotes.csv').runit()

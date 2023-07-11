@@ -80,8 +80,6 @@ def tweet_it():
         actually_post(post_content)
 
 def main():
-#    runlist = RunList(parent_dir)
-#    twitter = Twitter()
     #ensure that there is a mode file or create one with argparse
     #also makes new json because you will have an incomplete file
     #when switching from random to sequential
@@ -118,3 +116,5 @@ if __name__ == "__main__":
 
 ##TODO: remove secrets from github
 ##TODO: clean up sequencing from old version
+##TODO: add CSV URL functionality
+##TODO: add CSV location to only run_list.py

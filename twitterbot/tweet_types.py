@@ -8,7 +8,7 @@ def r_run(parent_dir):
     with open(os.path.join(parent_dir, 'data/quotes.json'),"r") as json_file:
         data = json.load(json_file)
         n = random.randint(0,len(data)-1)
-        tweet = "{}".format(data[n])
+        tweet = "{}".format(data[n]['quote'])
         working_data = data[:]
         working_data.pop(n)
 
@@ -24,7 +24,7 @@ def s_run(parent_dir):
     with open(os.path.join(parent_dir, 'data/quotes.json')) as json_file:
         data = json.load(json_file)
         n = pickle.load(open(os.path.join(parent_dir,'data/number.p'),"rb"))
-        tweet = "{}".format(data[n])
+        tweet = "{}".format(data[n]['quote'])
         if n == len(data)-1:
             n = 0
         else:

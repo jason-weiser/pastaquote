@@ -81,7 +81,7 @@ def main():
     #ensure that there is a mode file or create one with argparse
     #also makes new json because you will have an incomplete file
     #when switching from random to sequential
-    if options['TYPE'] != "sequential" and options['TYPE'] != "random":
+    if not (options['TYPE'] == "sequential" or options['TYPE'] == "random"):
         print("""
         You need to choose the order in which the list will run
         Please edit the config file in config.yaml
@@ -92,12 +92,8 @@ def main():
         make_pickle()
         logging.info("Numbering started and set to zero")
     #converts new csv list to json
-    if args.process_list:
-        runlist.runit()
-        logging.info("CSV list successfully converted to json")
     #reset all settings
     if args.initialize:
-        choose_mode()
         runlist.runit()
         make_pickle()
         msg = "Numbering started and list converted. Ready to tweet!"
@@ -106,14 +102,12 @@ def main():
     #authenticates and tweets
     if args.tweet:
         tweet_it()
-    elif not(args.tweet or args.process_list or args.initialize):
+    elif not(args.tweet or args.initialize):
         print("One argument is required. See --help for details")
 
 if __name__ == "__main__":
     main()
 
 ##TODO: remove secrets from github
-##TODO: clean up sequencing from old version
-##TODO: add CSV URL functionality
 ##TODO: add CSV location to only run_list.py
 ##TODO: check for whitespace in list of hashtags, remove it, capitalize second word, combine

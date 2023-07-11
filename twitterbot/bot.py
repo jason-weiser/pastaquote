@@ -23,8 +23,6 @@ parser.add_argument('--init', help='converts csv, starts numbering', \
                     dest='initialize', action="store_true")
 parser.add_argument("--tweet", help="tweets the next item in the list", \
                     dest='tweet', action='store_true')
-parser.add_argument("--mode", help="change the mode (random v sequential)", \
-                    action="store_true", dest="mode")
 args=parser.parse_args()
 
 
@@ -118,3 +116,4 @@ if __name__ == "__main__":
 ##TODO: clean up sequencing from old version
 ##TODO: add CSV URL functionality
 ##TODO: add CSV location to only run_list.py
+##TODO: check for whitespace in list of hashtags, remove it, capitalize second word, combine

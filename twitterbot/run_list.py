@@ -1,7 +1,7 @@
 import csv
 import json
 import codecs
-from urllib.request import urlopen
+import pandas as pd
 from pathlib import Path
 import os
 
@@ -14,11 +14,15 @@ class RunList:
     def runit(self):
         if self.csv_location.startswith("http://") or \
             self.csv_location.startswith("https://"):
-            response = urlopen(self.csv_location)
-            working_csv = csv.reader(codecs.iterdecode(response, "utf-8"))
-            json_list = []
-            for row in working_csv:
-                json_list.append(row)
+            df = pd.read_csv(self.csv_location)
+            working_csv = os.path.join(self.parent,'data/cached.csv')
+            df.to_csv(working_csv,index=False,header=True)
+            with open(working_csv, 'r') as c:
+                reader = csv.DictReader(c)
+                json_list = []
+                for row in reader:
+                    json_list.append(row)
+#TODO: add error handling so it falls back to cached file in event webpage is down
 
         else:
             working_csv = self.csv_location

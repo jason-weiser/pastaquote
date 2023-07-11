@@ -7,8 +7,8 @@ from requests_oauthlib import OAuth1Session
 
 ## Define directories and open up config.yaml
 current_d = Path(__file__)
-parent_d = current_d.resolve().parents[1]
-with open('config.yaml') as config_yml:
+parent_d = current_d.resolve().parents[0]
+with open(os.path.join(parent_d,'config.yaml')) as config_yml:
     config = yaml.safe_load(config_yml)
 
 mastodon_cred = config['MASTODON']

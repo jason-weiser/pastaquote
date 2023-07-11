@@ -27,13 +27,17 @@ args=parser.parse_args()
 
 
 ## Find parent directory
-current_dir = Path(__file__)
-parent_dir = current_dir.resolve().parents[1]
+running_file = Path(__file__)
+current_dir = running_file.resolve().parents[0]
+parent_dir = running_file.resolve().parents[1]
 pickle_dir = os.path.join(parent_dir, "data/number.p")
 
 ## Logging
 
-logging_file = 'twitterbot.log'
+logging_file = os.path.join(parent_dir, 'data/twitterbot.log')
+if not os.path.isfile(logging_file):
+    log_file = open(logging_file, 'x')
+    log_file.close()
 
 logging.basicConfig(
     level=logging.INFO,
@@ -43,7 +47,7 @@ logging.basicConfig(
 )
 
 ## Load the config
-with open('config.yaml') as config_yml:
+with open(os.path.join(current_dir,'config.yaml')) as config_yml:
     config = yaml.safe_load(config_yml)
 options = config['SETUP']
 twitter_options = config['TWITTER']

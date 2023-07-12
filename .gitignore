@@ -6,3 +6,8 @@ files/
 .p
 .venv
 .vscode
+config.yaml
+twitterbot.log
+quotes.json
+number.p
+cached.csv

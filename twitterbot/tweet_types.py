@@ -4,6 +4,9 @@ import os
 import pickle
 from run_list import RunList
 
+def add_hashtags(base_post):
+    pass
+
 def r_run(parent_dir):
     with open(os.path.join(parent_dir, 'data/quotes.json'),"r") as json_file:
         data = json.load(json_file)

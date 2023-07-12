@@ -54,9 +54,13 @@ def actually_post(tweet):
         if twitter_options['ENABLE_TWITTER'] == True:
             log_this("Tweet attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
-        elif mastodon_options['ENABLE_MASTODON'] == True:
+        else:
+            log_this("Twitter not enabled in config. Skipping.")
+        if mastodon_options['ENABLE_MASTODON'] == True:
             log_this("Post attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), masto.tootit(tweet)))
+        else:
+            log_this("Mastodon not enabled in config. Skipping.")
 
 def tweet_it():
     if options['TYPE'] == "sequential":
@@ -97,6 +101,5 @@ def main():
 if __name__ == "__main__":
     main()
 
-##TODO: remove secrets from github
 ##TODO: add CSV location to only run_list.py
 ##TODO: check for whitespace in list of hashtags, remove it, capitalize second word, combine

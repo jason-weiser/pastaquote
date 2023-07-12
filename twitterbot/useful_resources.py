@@ -1,7 +1,13 @@
 import requests
 import os
 import logging
+import yaml
 from pathlib import Path
+
+## Find parent directory
+running_file = Path(__file__)
+current_dir = running_file.resolve().parents[0]
+parent_dir = running_file.resolve().parents[1]
 
 def connection_validator(url_to_check):
     try:
@@ -14,13 +20,7 @@ def connection_validator(url_to_check):
         ##TODO: Add logging to this file
 
 def log_this(input_for_log):
-## Find parent directory
-    running_file = Path(__file__)
-    current_dir = running_file.resolve().parents[0]
-    parent_dir = running_file.resolve().parents[1]
-
     ## Logging
-
     logging_file = os.path.join(parent_dir, 'data/twitterbot.log')
     if not os.path.isfile(logging_file):
         log_file = open(logging_file, 'x')
@@ -34,4 +34,7 @@ def log_this(input_for_log):
     )
     logging.info(input_for_log)
 
-log_this("did this log?")
+def pull_config(section):
+    with open(os.path.join(current_dir,'config.yaml')) as config_yml:
+        config = yaml.safe_load(config_yml)
+    return config[section]

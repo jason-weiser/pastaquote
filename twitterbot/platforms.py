@@ -2,18 +2,19 @@ from pathlib import Path
 import yaml
 import os
 import requests
+from useful_resources import pull_config
 from mastodon import Mastodon
 from requests_oauthlib import OAuth1Session
 
 ## Define directories and open up config.yaml
-current_d = Path(__file__)
-parent_d = current_d.resolve().parents[0]
-with open(os.path.join(parent_d,'config.yaml')) as config_yml:
-    config = yaml.safe_load(config_yml)
+#current_d = Path(__file__)
+#parent_d = current_d.resolve().parents[0]
+#with open(os.path.join(parent_d,'config.yaml')) as config_yml:
+#    config = yaml.safe_load(config_yml)
 
-mastodon_cred = config['MASTODON']
-twitter_cred = config['TWITTER']
-#dotenv.load_dotenv(os.path.join(parent_d, 'data/config.ini'), override=True)
+#define the config
+mastodon_cred = pull_config('MASTODON')
+twitter_cred = pull_config('TWITTER')
 
 
 ## What makes the magic happen re: tweets

@@ -7,6 +7,7 @@ import argparse
 import yaml
 import tweet_types
 from useful_resources import log_this
+from useful_resources import pull_config
 from pathlib import Path
 from platforms import Twitter
 from platforms import Masto
@@ -32,11 +33,11 @@ parent_dir = running_file.resolve().parents[1]
 pickle_dir = os.path.join(parent_dir, "data/number.p")
 
 ## Load the config
-with open(os.path.join(current_dir,'config.yaml')) as config_yml:
-    config = yaml.safe_load(config_yml)
-options = config['SETUP']
-twitter_options = config['TWITTER']
-mastodon_options = config['MASTODON']
+#with open(os.path.join(current_dir,'config.yaml')) as config_yml:
+#    config = yaml.safe_load(config_yml)
+options = pull_config('SETUP')
+twitter_options = pull_config('TWITTER')
+mastodon_options = pull_config('MASTODON')
 
 ##Define objects
 
@@ -97,6 +98,7 @@ def main():
         tweet_it()
     elif not(args.tweet or args.initialize):
         print("One argument is required. See --help for details")
+        log_this("Script run without argument. Nothing happened")
 
 if __name__ == "__main__":
     main()

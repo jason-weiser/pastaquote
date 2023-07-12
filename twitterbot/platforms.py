@@ -3,7 +3,7 @@ import yaml
 import os
 import requests
 from useful_resources import pull_config
-from mastodon import Mastodon
+#from mastodon import Mastodon
 from requests_oauthlib import OAuth1Session
 
 ## Define directories and open up config.yaml

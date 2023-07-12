@@ -1,4 +1,3 @@
-#from __future__ import unicode_literals
 import random
 import json
 import pickle
@@ -7,11 +6,11 @@ import sys
 import argparse
 import yaml
 import tweet_types
+from useful_resources import log_this
 from pathlib import Path
 from platforms import Twitter
 from platforms import Masto
 from run_list import RunList
-import logging
 
 ## Arguments for command-line use
 parser = argparse.ArgumentParser(
@@ -32,20 +31,6 @@ current_dir = running_file.resolve().parents[0]
 parent_dir = running_file.resolve().parents[1]
 pickle_dir = os.path.join(parent_dir, "data/number.p")
 
-## Logging
-
-logging_file = os.path.join(parent_dir, 'data/twitterbot.log')
-if not os.path.isfile(logging_file):
-    log_file = open(logging_file, 'x')
-    log_file.close()
-
-logging.basicConfig(
-    level=logging.INFO,
-    format ='%(asctime)s : %(levelname)s : %(message)s',
-    filename=logging_file,
-    filemode='a+',
-)
-
 ## Load the config
 with open(os.path.join(current_dir,'config.yaml')) as config_yml:
     config = yaml.safe_load(config_yml)
@@ -55,7 +40,7 @@ mastodon_options = config['MASTODON']
 
 ##Define objects
 
-runlist = RunList(parent_dir, options['CSV_LOCATION'], logging_file)
+runlist = RunList(parent_dir, options['CSV_LOCATION'])
 twitter = Twitter()
 masto = Masto()
 
@@ -67,10 +52,10 @@ def make_pickle():
 
 def actually_post(tweet):
         if twitter_options['ENABLE_TWITTER'] == True:
-            logging.info("Tweet attempted: {}.\nResponse: {}" \
+            log_this("Tweet attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
         elif mastodon_options['ENABLE_MASTODON'] == True:
-            logging.info("Post attempted: {}.\nResponse: {}" \
+            log_this("Post attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), masto.tootit(tweet)))
 
 def tweet_it():
@@ -94,7 +79,7 @@ def main():
     #this makes a number file
     if not os.path.isfile(pickle_dir):
         make_pickle()
-        logging.info("Numbering started and set to zero")
+        log_this("Numbering started and set to zero")
     #converts new csv list to json
     #reset all settings
     if args.initialize:
@@ -102,7 +87,7 @@ def main():
         make_pickle()
         msg = "Numbering started and list converted. Ready to tweet!"
         print(msg)
-        logging.info("CSV converted and pickle created. Initialization successful")
+        log_this("CSV converted and pickle created. Initialization successful")
     #authenticates and tweets
     if args.tweet:
         tweet_it()

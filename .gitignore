@@ -6,10 +6,3 @@ files/
 .p
 .venv
 .vscode
-twitterbot.log
-data/config.yaml
-config.yaml
-quotes.json
-quotes.csv
-number.p
-cached.csv

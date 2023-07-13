@@ -3,9 +3,17 @@ import json
 import os
 import pickle
 from run_list import RunList
+from useful_resources import pull_config
 
-def add_hashtags(base_post):
-    pass
+def add_hashtags(base_post, where_posting):
+    platform = pull_config(where_posting)
+    if platform['ENABLE_HASHTAGS']:
+        base_post += "\n\n"
+        for i in platform['HASHTAGS']:
+            base_post += "#{} ".format(i)
+        return base_post
+    else:
+        return base_post
 
 def r_run(parent_dir):
     with open(os.path.join(parent_dir, 'data/quotes.json'),"r") as json_file:

@@ -54,12 +54,15 @@ def make_pickle():
 def actually_post(tweet):
         if twitter_options['ENABLE_TWITTER'] == True:
             log_this("Tweet attempted: {}.\nResponse: {}" \
-                    .format(tweet.rstrip('\n'), twitter.post_tweet(tweet)))
+                    .format(tweet.rstrip('\n'), \
+                        twitter.post_tweet(tweet_types.add_hashtags(tweet, 'TWITTER'))))
+
         else:
             log_this("Twitter not enabled in config. Skipping.")
         if mastodon_options['ENABLE_MASTODON'] == True:
             log_this("Post attempted: {}.\nResponse: {}" \
-                    .format(tweet.rstrip('\n'), masto.tootit(tweet)))
+                    .format(tweet.rstrip('\n'), \
+                        masto.tootit(tweet_types.add_hashtags(tweet, 'MASTODON'))))
         else:
             log_this("Mastodon not enabled in config. Skipping.")
 

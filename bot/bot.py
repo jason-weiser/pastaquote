@@ -55,14 +55,15 @@ def actually_post(tweet):
         if twitter_options['ENABLE_TWITTER'] == True:
             log_this("Tweet attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), \
-                        twitter.post_tweet(tweet_types.add_hashtags(tweet, 'TWITTER'))))
-
+                        twitter.post_tweet(\
+                            tweet_types.add_hashtags(tweet, 'TWITTER'))))
         else:
             log_this("Twitter not enabled in config. Skipping.")
         if mastodon_options['ENABLE_MASTODON'] == True:
             log_this("Post attempted: {}.\nResponse: {}" \
                     .format(tweet.rstrip('\n'), \
-                        masto.tootit(tweet_types.add_hashtags(tweet, 'MASTODON'))))
+                        masto.tootit(\
+                            tweet_types.add_hashtags(tweet, 'MASTODON'))))
         else:
             log_this("Mastodon not enabled in config. Skipping.")
 
@@ -78,6 +79,10 @@ def main():
     #ensure that there is a mode file or create one with argparse
     #also makes new json because you will have an incomplete file
     #when switching from random to sequential
+    if not os.path.isfile(os.path.join(parent_dir, "data/")):
+        os.mkdir(os.path.join(parent_dir, "data/"))
+    else:
+        pass
     if not (options['TYPE'] == "sequential" or options['TYPE'] == "random"):
         print("""
         You need to choose the order in which the list will run
@@ -88,6 +93,8 @@ def main():
     if not os.path.isfile(pickle_dir):
         make_pickle()
         log_this("Numbering started and set to zero")
+    else:
+        pass
     #converts new csv list to json
     #reset all settings
     if args.initialize:
@@ -101,10 +108,7 @@ def main():
         tweet_it()
     elif not(args.tweet or args.initialize):
         print("One argument is required. See --help for details")
-        log_this("Script run without argument. Nothing happened")
+        log_this("Script run without argument. Nothing posted.")
 
 if __name__ == "__main__":
     main()
-
-##TODO: add CSV location to only run_list.py
-##TODO: check for whitespace in list of hashtags, remove it, capitalize second word, combine

@@ -26,5 +26,4 @@ class RunList:
         file.close
 
 if __name__=="__main__":
-    runlist = RunList('/home/jason/python/twitterbot/')
-    runlist.runit()
+    pass

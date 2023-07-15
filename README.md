@@ -1,3 +1,4 @@
+<a name="readme-top"></a>
 <!-- ABOUT THE PROJECT -->
 ## About
 
@@ -130,11 +131,10 @@ python3 bot/bot.py --post
 
 I'm not responsible for what you post with this. Please don't use it to post anything hateful or harassing. Just because you use this tool does not mean I endorse it in any way. 
 
-Also not responsible if you use this for infrigement or any other illegal activity. Please use at your own risk/discretion.
+Also not responsible if you use this for infringement or any other illegal activity. Please use at your own risk/discretion.
 
 Additionally, like I said above, I'm not a programmer. This comes with no warranties and I accept no liabilities for you choosing to use this.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- ROADMAP -->

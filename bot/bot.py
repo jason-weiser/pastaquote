@@ -8,6 +8,7 @@ import yaml
 import tweet_types
 from useful_resources import log_this
 from useful_resources import pull_config
+from useful_resources import connection_validator
 from pathlib import Path
 from platforms import Twitter
 from platforms import Masto
@@ -75,11 +76,12 @@ def tweet_it():
         post_content = tweet_types.r_run(parent_dir)
         actually_post(post_content)
 
-def main():
+def lets_post():
     #ensure that there is a mode file or create one with argparse
     #also makes new json because you will have an incomplete file
     #when switching from random to sequential
-    if not os.path.isfile(os.path.join(parent_dir, "data/")):
+    where_csv = pull_config('SETUP')['CSV_LOCATION']
+    if not os.path.isdir(os.path.join(parent_dir, "data/")):
         os.mkdir(os.path.join(parent_dir, "data/"))
     else:
         pass
@@ -88,6 +90,18 @@ def main():
         You need to choose the order in which the list will run
         Please edit the config file in config.yaml
         """)
+        sys.exit()
+    else:
+        pass
+    if not os.path.isdir(where_csv) and \
+        not connection_validator(where_csv) == 200:
+        error_msg = """There's an issue with your CSV file. Either the server couldn't connect
+to the webpage or the file doesn't exist. Please fix this and run again."""
+        print(error_msg)
+        log_this(error_msg)
+        sys.exit()
+    else:
+        pass
     #if there isn't a numbering file in place and you want sequential tweets
     #this makes a number file
     if not os.path.isfile(pickle_dir):
@@ -109,6 +123,13 @@ def main():
     elif not(args.tweet or args.initialize):
         print("One argument is required. See --help for details")
         log_this("Script run without argument. Nothing posted.")
+
+def main():
+    try:  
+        lets_post()
+    except Exception as e: 
+        print(e)
+        log_this(e)
 
 if __name__ == "__main__":
     main()

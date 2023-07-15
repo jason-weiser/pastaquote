@@ -43,4 +43,4 @@ class RunList:
         file.close
 
 if __name__ == "__main__":
-    RunList('/home/jason/python/twitterbot/', '/home/jason/quotes.csv').runit()
+    pass

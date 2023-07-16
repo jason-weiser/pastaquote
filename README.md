@@ -81,13 +81,13 @@ cp bot/config.sample.yaml bot/config.yaml
 	- Follow [this link](https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api) to learn how to do it for Twitter. Also, good luck.
 	- And [this link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so under the "Find your access token" header.
 
-6. Set up your .csv file full of posts. See https://assets.jasonweiser.com/files/data/dune_quotes.csv for an example. The .csv is not really even a .csv file. It's just a file where each thing you want to pot is a new line. You can post whatever you want, **but "quotes" has to be in the first line**. Either save this to your server or to a publicly-available webpage.
+6. Set up your .csv file full of posts. This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.csv for an example of the csv. The .csv is not really even a .csv file. It's just a file where each thing you want to pot is a new line. You can post whatever you want, **but "quotes" has to be in the first line**. Either save this to your server or to a publicly-available webpage.
 
 7. Update the config.yaml with your credentials:
 ```
 SETUP:
   TYPE: "random"
-  CSV_LOCATION: "https://assets.jasonweiser.com/files/data/dune_quotes.csv"
+  CSV_LOCATION: "/home/username/quotes_to_post.csv"
   
 TWITTER:
   ENABLE_TWITTER: False

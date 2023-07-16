@@ -126,7 +126,7 @@ python3 bot/bot.py --post
 
 ### Updating
 
-To update, simply go to your 'pastaquote' and type:
+To update, simply go to your 'pastaquote' directory and type:
 ```sh
 git pull
 ```

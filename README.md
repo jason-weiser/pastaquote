@@ -60,11 +60,11 @@ It's recommended that you run Python in a virtual environment. You can also not,
 
 1. Clone the repo
 ```sh
-git clone https://github.com/jason-weiser/Postaquote.git
+git clone https://github.com/jason-weiser/pastaquote.git
 ```
 2. (optional) Set up a virtual environment
 ```sh
-cd Postaquote
+cd pastaquote
 python3 -m venv venv
 source venv/bin/activate
 ```
@@ -120,8 +120,8 @@ python3 bot/bot.py --init
 python3 bot/bot.py --post
 ```
 10. You schedule via cronjob, so you do that how many times a day you want with the following text. This will be for every hour, for example.
-	- If you use a virtual environment: `01 */1 * * * /path/to/your/venv/bin/python path/to/Postaquote/bot/bot.py --post`
-	- Using your regular Python install: `01 */1 * * * python3 path/to/Postaquote/bot/bot.py --post`
+	- If you use a virtual environment: `01 */1 * * * /path/to/your/venv/bin/python path/to/pastaquote/bot/bot.py --post`
+	- Using your regular Python install: `01 */1 * * * python3 path/to/pastaquote/bot/bot.py --post`
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -142,7 +142,7 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 
 - [x] Add Mastodon
 - [x] Add hashtags
-- [ ] Add dry-run tag so you can see what you're about to post
+- [ ] Add dry-run tag so you can see what you would have posted.
 - [ ] Add Docker container (requires me learning Docker)
 - [ ] Add webpage/GUI (requires me learning Flask and/or Javascript)
 

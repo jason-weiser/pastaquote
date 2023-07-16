@@ -81,7 +81,7 @@ cp bot/config.sample.yaml bot/config.yaml
 	- Follow [this link](https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api) to learn how to do it for Twitter. Also, good luck.
 	- And [this link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so under the "Find your access token" header.
 
-6. Set up your .csv file full of posts. See https://assets.jasonweiser.com/files/data/dune_quotes.csv for an example. You can post whatever you want, **but "quotes" has to be in the first line**. Either save this to your server or to a publicly-available webpage.
+6. Set up your .csv file full of posts. See https://assets.jasonweiser.com/files/data/dune_quotes.csv for an example. The .csv is not really even a .csv file. It's just a file where each thing you want to pot is a new line. You can post whatever you want, **but "quotes" has to be in the first line**. Either save this to your server or to a publicly-available webpage.
 
 7. Update the config.yaml with your credentials:
 ```
@@ -142,6 +142,7 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 
 - [x] Add Mastodon
 - [x] Add hashtags
+- [ ] Add dry-run tag so you can see what you're about to post
 - [ ] Add Docker container (requires me learning Docker)
 - [ ] Add webpage/GUI (requires me learning Flask and/or Javascript)
 
@@ -153,7 +154,7 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an  place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Any contributions you make are **greatly appreciated**. You'll probably have to walk me through it, though. I'm pretty new.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 

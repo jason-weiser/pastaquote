@@ -7,6 +7,8 @@ SETUP:
   TYPE: random
 #The full path of the csv of the posts you want to make.
 #I use my home folder but you do you. Must have read access.
+#additionally, this can be a webpage. See "https://assets.jasonweiser.com/files/data/dune_quotes.csv"
+#for an example of how to structure them. Or see the README.
   CSV_LOCATION: ""
 
 TWITTER:

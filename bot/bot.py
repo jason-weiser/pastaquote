@@ -34,8 +34,6 @@ parent_dir = running_file.resolve().parents[1]
 pickle_dir = os.path.join(parent_dir, "data/number.p")
 
 ## Load the config
-#with open(os.path.join(current_dir,'config.yaml')) as config_yml:
-#    config = yaml.safe_load(config_yml)
 options = pull_config('SETUP')
 twitter_options = pull_config('TWITTER')
 mastodon_options = pull_config('MASTODON')
@@ -48,6 +46,8 @@ masto = Masto()
 
 ## Program run
 
+##This is for the sequential posting, only.
+#https://docs.python.org/3/library/pickle.html
 def make_pickle():
     initial_num = 0
     pickle.dump(initial_num, open(pickle_dir,"wb"))
@@ -77,9 +77,6 @@ def tweet_it():
         actually_post(post_content)
 
 def lets_post():
-    #ensure that there is a mode file or create one with argparse
-    #also makes new json because you will have an incomplete file
-    #when switching from random to sequential
     where_csv = pull_config('SETUP')['CSV_LOCATION']
     if not os.path.isdir(os.path.join(parent_dir, "data/")):
         os.mkdir(os.path.join(parent_dir, "data/"))

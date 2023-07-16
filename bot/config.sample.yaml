@@ -23,6 +23,8 @@ TWITTER:
 MASTODON:
   ENABLE_MASTODON: False
   MASTODON_ACCESS_TOKEN: ""
+  #No trailing slash in the Mastodon base URL
+  #e.g. just "https://botsin.space", NOT "https://botsin.space/"
   MASTO_BASE_URL: ""
   ENABLE_HASHTAGS: False
   HASHTAGS: ["Hashtag","Hashtag"]

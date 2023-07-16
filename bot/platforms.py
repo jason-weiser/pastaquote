@@ -42,7 +42,7 @@ class Twitter:
 
 ## What makes the magic happen re:toots
 class Masto:
-    api_url = 'https://weiser.social/api/v1/statuses'
+    api_url = '{}/api/v1/statuses'.format(mastodon_cred['MASTO_BASE_URL'])
 
     def tootit(self, status):
         auth = {

@@ -22,8 +22,8 @@ parser.add_argument('--process', help="run when added new items", \
                     dest="process_list", action="store_true")
 parser.add_argument('--init', help='converts csv, starts numbering', \
                     dest='initialize', action="store_true")
-parser.add_argument("--tweet", help="tweets the next item in the list", \
-                    dest='tweet', action='store_true')
+parser.add_argument("--post", help="posts the next item in the list", \
+                    dest='post', action='store_true')
 args=parser.parse_args()
 
 
@@ -54,15 +54,15 @@ def make_pickle():
 
 def actually_post(tweet):
         if twitter_options['ENABLE_TWITTER'] == True:
-            log_this("Tweet attempted: {}.\nResponse: {}" \
-                    .format(tweet.rstrip('\n'), \
+            log_this("Tweet attempted: {}\nResponse: {}" \
+                    .format(tweet_types.add_hashtags(tweet, 'TWITTER'), \
                         twitter.post_tweet(\
                             tweet_types.add_hashtags(tweet, 'TWITTER'))))
         else:
             log_this("Twitter not enabled in config. Skipping.")
         if mastodon_options['ENABLE_MASTODON'] == True:
-            log_this("Post attempted: {}.\nResponse: {}" \
-                    .format(tweet.rstrip('\n'), \
+            log_this("Toot attempted: {}\nResponse: {}" \
+                    .format(tweet_types.add_hashtags(tweet, 'MASTODON'), \
                         masto.tootit(\
                             tweet_types.add_hashtags(tweet, 'MASTODON'))))
         else:
@@ -115,7 +115,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         print(msg)
         log_this("CSV converted and pickle created. Initialization successful")
     #authenticates and tweets
-    if args.tweet:
+    if args.post:
         tweet_it()
     elif not(args.tweet or args.initialize):
         print("One argument is required. See --help for details")

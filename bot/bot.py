@@ -117,7 +117,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     #authenticates and tweets
     if args.post:
         tweet_it()
-    elif not(args.tweet or args.initialize):
+    elif not(args.post or args.initialize):
         print("One argument is required. See --help for details")
         log_this("Script run without argument. Nothing posted.")
 

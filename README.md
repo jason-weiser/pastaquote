@@ -124,7 +124,13 @@ python3 bot/bot.py --post
 	- Using your regular Python install: `01 */1 * * * python3 path/to/pastaquote/bot/bot.py --post`
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### Updating
 
+To update, simply go to your 'pastaquote' and type:
+```sh
+git pull
+```
+It will keep your numbering, current list position, and everything us.
 
 <!-- DISCLAIMER -->
 ## Disclaimer
@@ -152,7 +158,7 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 
 
 <!-- CONTRIBUTING -->
-## Contributing
+## Contributing & Issues
 
 Any contributions you make are **greatly appreciated**. You'll probably have to walk me through it, though. I'm pretty new.
 
@@ -163,6 +169,8 @@ If you have a suggestion that would make this better, please fork the repo and c
 3. Commit your Changes (`git commit -m 'Add some Feature'`)
 4. Push to the Branch (`git push origin feature/Feature`)
 5. Open a Pull Request
+
+Please let me know when ("when" not "if") you find an issue.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

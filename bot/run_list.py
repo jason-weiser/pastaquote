@@ -66,5 +66,4 @@ Please see the log for further details.""".format(total_exceeded)
         file.close
 
 if __name__ == "__main__":
-    runThatList = RunList("/home/jason/python/twitterbot/","/home/jason/quotes.csv")
-    runThatList.runit()
+    pass

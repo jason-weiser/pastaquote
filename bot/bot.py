@@ -53,14 +53,14 @@ def make_pickle():
     pickle.dump(initial_num, open(pickle_dir,"wb"))
 
 def actually_post(tweet):
-        if twitter_options['ENABLE_TWITTER'] == True:
+        if twitter_options['ENABLE_PLATFORM'] == True:
             log_this("Tweet attempted: {}\nResponse: {}" \
                     .format(tweet_types.add_hashtags(tweet, 'TWITTER'), \
                         twitter.post_tweet(\
                             tweet_types.add_hashtags(tweet, 'TWITTER'))))
         else:
             log_this("Twitter not enabled in config. Skipping.")
-        if mastodon_options['ENABLE_MASTODON'] == True:
+        if mastodon_options['ENABLE_PLATFORM'] == True:
             log_this("Toot attempted: {}\nResponse: {}" \
                     .format(tweet_types.add_hashtags(tweet, 'MASTODON'), \
                         masto.tootit(\

@@ -12,19 +12,26 @@ SETUP:
   CSV_LOCATION: ""
 
 TWITTER:
-  ENABLE_TWITTER: False
+  ENABLE_PLATFORM: False
   TWITTER_CONSUMER_KEY: ""
   TWITTER_CONSUMER_SECRET: ""
   TWITTER_ACCESS_TOKEN: ""
   TWITTER_ACCESS_TOKEN_SECRET: ""
+  CHARACTER_LIMIT: 280
+  #Skip if the tweet exceeds the character limit
+  SKIP_TOO_LONG: False
   ENABLE_HASHTAGS: False
   HASHTAGS: ["Hashtag","Hashtag"]
 
 MASTODON:
-  ENABLE_MASTODON: False
+  ENABLE_PLATFORM: False
   MASTO_ACCESS_TOKEN: ""
   #No trailing slash in the Mastodon base URL
   #e.g. just "https://botsin.space", NOT "https://botsin.space/"
   MASTO_BASE_URL: ""
+  #Set this to whatever your instance character limit is
+  CHARACTER_LIMIT: 500
+  #Skip if the toot exceeds the character limit
+  SKIP_TOO_LONG: False
   ENABLE_HASHTAGS: False
   HASHTAGS: ["Hashtag","Hashtag"]

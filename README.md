@@ -81,13 +81,13 @@ cp bot/config.sample.yaml bot/config.yaml
 	- Follow [this link](https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api) to learn how to do it for Twitter. Also, good luck.
 	- And [this link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so under the "Find your access token" header.
 
-6. Set up your .csv file full of posts. This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.csv for an example of the csv. The .csv is not really even a .csv file. It's just a file where each thing you want to pot is a new line. You can post whatever you want, **but "quotes" has to be in the first line**. Either save this to your server or to a publicly-available webpage.
+6. Set up your .txt file full of posts. This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.txt for an example of the file. It's just a file where each thing you want to pot is a new line. Either save this to your server or to a publicly-available webpage.
 
 7. Update the config.yaml with your credentials:
 ```
 SETUP:
   TYPE: "random"
-  CSV_LOCATION: "/home/username/quotes_to_post.csv"
+  LIST_LOCATION: "/home/username/quotes_to_post.txt"
   
 TWITTER:
   ENABLE_TWITTER: False
@@ -95,6 +95,8 @@ TWITTER:
   TWITTER_CONSUMER_SECRET: "gibberishgibberishgibberish"
   TWITTER_ACCESS_TOKEN: "gibberishgibberishgibberish"
   TWITTER_ACCESS_TOKEN_SECRET: "gibberishgibberishgibberish"
+  CHARACTER_LIMIT: 280
+  SKIP_TOO_LONG: False
   ENABLE_HASHTAGS: False
   HASHTAGS: ["Hashtag","Hashtag"]
 
@@ -102,14 +104,17 @@ MASTODON:
   ENABLE_MASTODON: True
   MASTO_ACCESS_TOKEN: "gibberishgibberishgibberish"
   MASTO_BASE_URL: "https://example.com"
+  CHARACTER_LIMIT: 500
+  SKIP_TOO_LONG: False
   ENABLE_HASHTAGS: True
   HASHTAGS: ["Hashtag","Hashtag"]
 ```
 **Of Note**:
 - You decide here whether you're posting in a sequential list or from random, non-repeating selections in a list.
 - Please match things in quotations and things not in quotation exactly, filling it in with your own details but keeping the format.
-- You can point it to a webpage that has a .csv file or a local file via a path it has read access to. Either work. Just replace the webpage above. 
+- You can point it to a webpage that has a .txt file or a local file via a path it has read access to. Either work. Just replace the webpage above. 
 - If you want hashtags, please change `False` to `True` (no quotes) and add however many hashtags you want. These will go on all *future* posts.
+- The config will not enforce character limits by default, but instead will throw up warnings. If you mark "SKIP_TOO_LONG" to True, it will skip any that are too long for that particular service. You can see a list of any posts that are too long in the log.
 
 8. Run the initialization
 ```sh

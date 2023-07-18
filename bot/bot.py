@@ -57,17 +57,6 @@ def actually_post(tweet,platform_to_post):
         platform_function = Masto()
     else:
         log_this("No platform defined")
-    print("""For {},
-    Enable platform comes across as: {}
-    skip-too-long comes across as: {}
-    runlist.validate_char comes across as: {}
-    The post in question is: {}""".format(\
-        platform_to_post,
-        platform_options['ENABLE_PLATFORM'],
-        platform_options['SKIP_TOO_LONG'],
-        runlist.validate_char(platform_to_post,tweet),
-        tweet
-        ))
     if platform_options['ENABLE_PLATFORM'] == True and \
         not platform_options['SKIP_TOO_LONG'] and \
         runlist.validate_char(platform_to_post,tweet) == 0:

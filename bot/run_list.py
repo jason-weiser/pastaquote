@@ -1,6 +1,7 @@
 import json
-import pandas as pd
+import urllib.request
 import logging
+import urllib.request
 from pathlib import Path
 from useful_resources import connection_validator
 from useful_resources import log_this
@@ -27,10 +28,9 @@ class RunList:
     def list_to_json(self, post_list):
         total_exceeded = 0
         with open(post_list, 'r') as c:
-            reader = list.DictReader(c)
             working_json_list = []
-            for row in reader:
-                working_json_list.append(row)
+            for row in c:
+                working_json_list.append(row.strip('\n'))
                 total_exceeded += self.validate_char("TWITTER",row)
                 total_exceeded += self.validate_char("MASTODON",row)
         if total_exceeded > 0:
@@ -44,10 +44,11 @@ Please see the log for further details.""".format(total_exceeded)
     def runit(self):
         if self.list_location.startswith("http://") or \
             self.list_location.startswith("https://"):
-            working_list = os.path.join(self.parent,'data/cached.list')
+            working_list = os.path.join(self.parent,'data/cached.txt')
             if connection_validator(self.list_location) == 200:
-                df = pd.read_list(self.list_location)
-                df.to_list(working_list,index=False,header=True)
+                with open(working_list, 'w') as f:
+                    for line in urllib.request.urlopen(self.list_location):
+                        f.write(line.decode('utf-8'))
             else:
                 log_this("""Issue connecting to list URL: {}. Falling back by default
                 to cached list file if it exists.""".\

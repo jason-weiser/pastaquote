@@ -22,7 +22,6 @@ class RunList:
                 text_row,pull_config(platform)["CHARACTER_LIMIT"],platform,\
                     len(text_row) - pull_config(platform)["CHARACTER_LIMIT"])
             log_this(warning)
-            print(warning)
             return 1
         else:
             return 0

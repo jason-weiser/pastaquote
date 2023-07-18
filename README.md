@@ -126,11 +126,8 @@ python3 bot/bot.py --post
 
 ### Updating
 
-To update, simply go to your 'pastaquote' directory and type:
-```sh
-git pull
-```
-It will keep your numbering, current list position, and everything us.
+To update, simply download the new release and copy the contents of the folder to your current working directory.
+It will keep your numbering, current list position, and everything else.
 
 <!-- DISCLAIMER -->
 ## Disclaimer

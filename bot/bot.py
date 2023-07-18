@@ -64,7 +64,7 @@ def actually_post(tweet,platform_to_post):
             .format(tweet_types.add_hashtags(tweet,\
             platform_to_post), \
             platform_function.post_it(\
-            tweet_types.add_hashtags(tweet, 'TWITTER'))))
+            tweet_types.add_hashtags(tweet, platform_to_post))))
     elif platform_options['ENABLE_PLATFORM'] == False:
             log_this("{} not enabled in config. Skipping.".format(platform_to_post))
     elif platform_options['SKIP_TOO_LONG'] and runlist.validate_char(\
@@ -138,3 +138,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+##TODO: Fix hashtags

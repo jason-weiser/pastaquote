@@ -16,11 +16,11 @@ from run_list import RunList
 
 ## Arguments for command-line use
 parser = argparse.ArgumentParser(
-    description='A command line python bot to tweet from a csv list'
+    description='A command line python bot to tweet from a text list'
    )
 parser.add_argument('--process', help="run when added new items", \
                     dest="process_list", action="store_true")
-parser.add_argument('--init', help='converts csv, starts numbering', \
+parser.add_argument('--init', help='converts text list, starts numbering', \
                     dest='initialize', action="store_true")
 parser.add_argument("--post", help="posts the next item in the list", \
                     dest='post', action='store_true')
@@ -38,7 +38,7 @@ options = pull_config('SETUP')
 
 ##Define objects
 
-runlist = RunList(parent_dir, options['CSV_LOCATION'])
+runlist = RunList(parent_dir, options['LIST_LOCATION'])
 destinations = ['TWITTER','MASTODON']
 
 ## Program run
@@ -50,16 +50,27 @@ def make_pickle():
     pickle.dump(initial_num, open(pickle_dir,"wb"))
 
 def actually_post(tweet,platform_to_post):
-    platform_options = pull_config[platform_to_post]
+    platform_options = pull_config(platform_to_post)
     if platform_to_post == 'TWITTER':
         platform_function = Twitter()
     elif platform_to_post == 'MASTODON':
         platform_function = Masto()
     else:
         log_this("No platform defined")
+    print("""For {},
+    Enable platform comes across as: {}
+    skip-too-long comes across as: {}
+    runlist.validate_char comes across as: {}
+    The post in question is: {}""".format(\
+        platform_to_post,
+        platform_options['ENABLE_PLATFORM'],
+        platform_options['SKIP_TOO_LONG'],
+        runlist.validate_char(platform_to_post,tweet),
+        tweet
+        ))
     if platform_options['ENABLE_PLATFORM'] == True and \
         not platform_options['SKIP_TOO_LONG'] and \
-        runlist.validate_char(platform_to_post,tweet):
+        runlist.validate_char(platform_to_post,tweet) == 0:
         log_this("Post attempted: {}\nResponse: {}" \
             .format(tweet_types.add_hashtags(tweet,\
             platform_to_post), \
@@ -71,19 +82,21 @@ def actually_post(tweet,platform_to_post):
             platform_to_post,tweet):
             log_this("""Post exceeded character count for {}. Skipping posts that are
 too long is enabled in the config. Skipping.""".format(platform_to_post))
+    else:
+        print("{} failed to post. Please ensure your config is correct.".format(platform_to_post))
 
 def tweet_it():
     if options['TYPE'] == "sequential":
         post_content = tweet_types.s_run(parent_dir)
-        for i in destination:
+        for i in destinations:
             actually_post(post_content, i)
     elif options['TYPE'] == "random":
         post_content = tweet_types.r_run(parent_dir)
-        for i in destination:
+        for i in destinations:
             actually_post(post_content, i)
 
 def lets_post():
-    where_csv = pull_config('SETUP')['CSV_LOCATION']
+    where_list = pull_config('SETUP')['LIST_LOCATION']
     if not os.path.isdir(os.path.join(parent_dir, "data/")):
         os.mkdir(os.path.join(parent_dir, "data/"))
     else:
@@ -96,9 +109,9 @@ def lets_post():
         sys.exit()
     else:
         pass
-    if not os.path.isdir(where_csv) and \
-        not connection_validator(where_csv) == 200:
-        error_msg = """There's an issue with your CSV file. Either the server couldn't connect
+    if not os.path.isdir(where_list) and \
+        not connection_validator(where_list) == 200:
+        error_msg = """There's an issue with your list file. Either the server couldn't connect
 to the webpage or the file doesn't exist. Please fix this and run again."""
         print(error_msg)
         log_this(error_msg)
@@ -112,14 +125,14 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         log_this("Numbering started and set to zero")
     else:
         pass
-    #converts new csv list to json
+    #converts new text list to json
     #reset all settings
     if args.initialize:
         runlist.runit()
         make_pickle()
         msg = "Numbering started and list converted. Ready to tweet!"
         print(msg)
-        log_this("CSV converted and pickle created. Initialization successful")
+        log_this("Text converted and pickle created. Initialization successful")
     #authenticates and tweets
     if args.post:
         tweet_it()
@@ -136,6 +149,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-#TODO: Fix the RunList().validate function so it doesn't treat input like dictionary.
-#TODO: Make a new mastodon test account to actually test all this.

@@ -31,7 +31,7 @@ class Twitter:
                         resource_owner_key=self.access_token,
                         resource_owner_secret=self.access_token_secret)
 
-    def post_tweet(self, status):
+    def post_it(self, status):
         parameters = {
             'status': status
         }
@@ -44,7 +44,7 @@ class Twitter:
 class Masto:
     api_url = '{}/api/v1/statuses'.format(mastodon_cred['MASTO_BASE_URL'])
 
-    def tootit(self, status):
+    def post_it(self, status):
         auth = {
             'Authorization': 'Bearer {}'.format(mastodon_cred['MASTO_ACCESS_TOKEN'])
         }

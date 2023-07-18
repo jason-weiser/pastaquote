@@ -35,14 +35,11 @@ pickle_dir = os.path.join(parent_dir, "data/number.p")
 
 ## Load the config
 options = pull_config('SETUP')
-twitter_options = pull_config('TWITTER')
-mastodon_options = pull_config('MASTODON')
 
 ##Define objects
 
 runlist = RunList(parent_dir, options['CSV_LOCATION'])
-twitter = Twitter()
-masto = Masto()
+destinations = ['TWITTER','MASTODON']
 
 ## Program run
 
@@ -52,29 +49,38 @@ def make_pickle():
     initial_num = 0
     pickle.dump(initial_num, open(pickle_dir,"wb"))
 
-def actually_post(tweet):
-        if twitter_options['ENABLE_PLATFORM'] == True:
-            log_this("Tweet attempted: {}\nResponse: {}" \
-                    .format(tweet_types.add_hashtags(tweet, 'TWITTER'), \
-                        twitter.post_tweet(\
-                            tweet_types.add_hashtags(tweet, 'TWITTER'))))
-        else:
-            log_this("Twitter not enabled in config. Skipping.")
-        if mastodon_options['ENABLE_PLATFORM'] == True:
-            log_this("Toot attempted: {}\nResponse: {}" \
-                    .format(tweet_types.add_hashtags(tweet, 'MASTODON'), \
-                        masto.tootit(\
-                            tweet_types.add_hashtags(tweet, 'MASTODON'))))
-        else:
-            log_this("Mastodon not enabled in config. Skipping.")
+def actually_post(tweet,platform_to_post):
+    platform_options = pull_config[platform_to_post]
+    if platform_to_post == 'TWITTER':
+        platform_function = Twitter()
+    elif platform_to_post == 'MASTODON':
+        platform_function = Masto()
+    else:
+        log_this("No platform defined")
+    if platform_options['ENABLE_PLATFORM'] == True and \
+        not platform_options['SKIP_TOO_LONG'] and \
+        runlist.validate_char(platform_to_post,tweet):
+        log_this("Post attempted: {}\nResponse: {}" \
+            .format(tweet_types.add_hashtags(tweet,\
+            platform_to_post), \
+            platform_function.post_it(\
+            tweet_types.add_hashtags(tweet, 'TWITTER'))))
+    elif platform_options['ENABLE_PLATFORM'] == False:
+            log_this("{} not enabled in config. Skipping.".format(platform_to_post))
+    elif platform_options['SKIP_TOO_LONG'] and runlist.validate_char(\
+            platform_to_post,tweet):
+            log_this("""Post exceeded character count for {}. Skipping posts that are
+too long is enabled in the config. Skipping.""".format(platform_to_post))
 
 def tweet_it():
     if options['TYPE'] == "sequential":
         post_content = tweet_types.s_run(parent_dir)
-        actually_post(post_content)
+        for i in destination:
+            actually_post(post_content, i)
     elif options['TYPE'] == "random":
         post_content = tweet_types.r_run(parent_dir)
-        actually_post(post_content)
+        for i in destination:
+            actually_post(post_content, i)
 
 def lets_post():
     where_csv = pull_config('SETUP')['CSV_LOCATION']
@@ -130,3 +136,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#TODO: Fix the RunList().validate function so it doesn't treat input like dictionary.
+#TODO: Make a new mastodon test account to actually test all this.

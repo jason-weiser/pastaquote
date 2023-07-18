@@ -3,7 +3,6 @@ charset-normalizer==3.2.0
 idna==3.4
 numpy==1.24.4
 oauthlib==3.2.2
-pandas==2.0.3
 python-dateutil==2.8.2
 pytz==2023.3
 PyYAML==6.0

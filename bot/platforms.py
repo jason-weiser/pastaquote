@@ -6,12 +6,6 @@ from useful_resources import pull_config
 #from mastodon import Mastodon
 from requests_oauthlib import OAuth1Session
 
-## Define directories and open up config.yaml
-#current_d = Path(__file__)
-#parent_d = current_d.resolve().parents[0]
-#with open(os.path.join(parent_d,'config.yaml')) as config_yml:
-#    config = yaml.safe_load(config_yml)
-
 #define the config
 mastodon_cred = pull_config('MASTODON')
 twitter_cred = pull_config('TWITTER')
@@ -31,7 +25,7 @@ class Twitter:
                         resource_owner_key=self.access_token,
                         resource_owner_secret=self.access_token_secret)
 
-    def post_tweet(self, status):
+    def post_it(self, status):
         parameters = {
             'status': status
         }
@@ -44,7 +38,7 @@ class Twitter:
 class Masto:
     api_url = '{}/api/v1/statuses'.format(mastodon_cred['MASTO_BASE_URL'])
 
-    def tootit(self, status):
+    def post_it(self, status):
         auth = {
             'Authorization': 'Bearer {}'.format(mastodon_cred['MASTO_ACCESS_TOKEN'])
         }

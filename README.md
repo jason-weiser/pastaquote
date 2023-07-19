@@ -151,7 +151,7 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 
 - [x] Add Mastodon
 - [x] Add hashtags
-- [ ] Add dry-run tag so you can see what you would have posted.
+- [ ] Add method by which you can add to actively-running list without having to reload the list
 - [ ] Add Docker container (requires me learning Docker)
 - [ ] Add webpage/GUI (requires me learning Flask and/or Javascript)
 

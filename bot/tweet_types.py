@@ -15,7 +15,7 @@ def add_hashtags(base_post, where_posting):
     else:
         return base_post
 
-def r_run(parent_dir):
+def r_run(parent_dir, list_loc):
     with open(os.path.join(parent_dir, 'data/quotes.json'),"r") as json_file:
         data = json.load(json_file)
         n = random.randint(0,len(data)-1)
@@ -24,7 +24,7 @@ def r_run(parent_dir):
         working_data.pop(n)
 
     if len(working_data) == 0:
-        runlist = RunList(parent_dir)
+        runlist = RunList(parent_dir,list_loc)
         runlist.runit()
     else:
         with open(os.path.join(parent_dir,'data/quotes.json'), "w") as f:

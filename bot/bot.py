@@ -80,7 +80,7 @@ def tweet_it():
         for i in destinations:
             actually_post(post_content, i)
     elif options['TYPE'] == "random":
-        post_content = tweet_types.r_run(parent_dir)
+        post_content = tweet_types.r_run(parent_dir,options['LIST_LOCATION'])
         for i in destinations:
             actually_post(post_content, i)
 
@@ -98,15 +98,17 @@ def lets_post():
         sys.exit()
     else:
         pass
-    if not os.path.isdir(where_list) and \
-        not connection_validator(where_list) == 200:
-        error_msg = """There's an issue with your list file. Either the server couldn't connect
+    if os.path.isfile(options['LIST_LOCATION']):
+        pass
+    else:
+        if connection_validator(options['LIST_LOCATION']) == 200:
+            pass
+        else:
+            error_msg = """There's an issue with your list file. Either the server couldn't connect
 to the webpage or the file doesn't exist. Please fix this and run again."""
         print(error_msg)
         log_this(error_msg)
         sys.exit()
-    else:
-        pass
     #if there isn't a numbering file in place and you want sequential tweets
     #this makes a number file
     if not os.path.isfile(pickle_dir):
@@ -138,5 +140,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-##TODO: Fix hashtags

@@ -3,7 +3,6 @@ import yaml
 import os
 import requests
 from useful_resources import pull_config
-#from mastodon import Mastodon
 from requests_oauthlib import OAuth1Session
 
 #define the config
@@ -27,12 +26,12 @@ class Twitter:
 
     def post_it(self, status):
         parameters = {
-            'status': status
+            'text': status
         }
 
-        url = "{}1.1/statuses/update.json".format(self.base_url)
-        resp = self.session.post(url, params = parameters)
-        return resp.status_code
+        url = "{}2/tweets".format(self.base_url)
+        resp = self.session.post(url, json = parameters)
+        return resp.content
 
 ## What makes the magic happen re:toots
 class Masto:

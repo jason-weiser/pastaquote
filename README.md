@@ -79,7 +79,8 @@ cp bot/config.sample.yaml bot/config.yaml
 
 5. Get your API keys. Currently, this bot supports posting via the API to Twitter and Mastodon. Bluesky and Threads to follow if they add the functionality. 
 	- Follow [this link](https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api) to learn how to do it for Twitter. Also, good luck.
-	- And [this link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so under the "Find your access token" header.
+ 		- Of note: You *may* need to add a new project and add your app to the project in the [https://developer.twitter.com](https://developer.twitter.com) area. Docs are unclear, but I was getting a lot of errors until I did this (seemingly) meaningless thing. 
+	- And [this link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so in Mastodon under the "Find your access token" header.
 
 6. Set up your .txt file full of posts. This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.txt for an example of the file. It's just a file where each thing you want to pot is a new line. Either save this to your server or to a publicly-available webpage.
 

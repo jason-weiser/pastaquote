@@ -13,6 +13,7 @@ class RunList:
     def __init__(self, parent, list_location):
         self.parent = parent
         self.list_location = list_location
+        self.cached_list = os.path.join(self.parent,'data/cached.txt')
 
     def validate_char(self, platform, text_row):
         if len(text_row) > pull_config(platform)["CHARACTER_LIMIT"] \
@@ -40,11 +41,37 @@ Please see the log for further details.""".format(total_exceeded)
             print(exceeded_msg)
             log_this(exceeded_msg)
         return working_json_list
+    def txt_to_list(self, input_txt):
+        output_list = []
+        with open(input_txt, 'r') as working1: 
+            for i in working1:
+                output_list.append(i.rstrip())
+        return output_list
+
+    def compare_return_diff(self, f1, f2):
+        list1 = txt_to_list(f1)
+        list2 = txt_to_list(f2)
+        difference = set(list2).difference(set(list1))
+        return difference
+
+    def append_json(self):
+        json_list = self.jsonfile
+        lines_to_add = compare_return_diff(self.cached_list,self.list_location)
+        with open(json_list,"r") as j:
+            data = json.load(j)
+            working_data = data[:]
+            for i in lines_to_add:
+                if i in working_data:
+                    pass
+                else:
+                    working_data.append(i)
+        with open((json_list), "w") as f:
+            json.dump(working_data, f, indent=4)
 
     def runit(self):
         if self.list_location.startswith("http://") or \
             self.list_location.startswith("https://"):
-            working_list = os.path.join(self.parent,'data/cached.txt')
+            working_list = self.cached_list
             if connection_validator(self.list_location) == 200:
                 with open(working_list, 'w') as f:
                     for line in urllib.request.urlopen(self.list_location):

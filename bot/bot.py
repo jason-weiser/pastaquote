@@ -131,7 +131,13 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     if args.post:
         tweet_it()
     if args.add:
-        runlist.append_json()
+        if options['TYPE'] == 'random':
+            runlist.append_json()
+        elif options['TYPE'] == 'sequential':
+            runlis.runit()
+            log_this("Lines added. Numbering NOT reset.")
+        else:
+            print("Config error: please choose 'random' or 'sequential' posts.")
     elif not(args.post or args.initialize or args.add):
         print("One argument is required. See --help for details")
         log_this("Script run without argument. Nothing posted.")
@@ -146,4 +152,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-##TODO: update caching
+##TODO: add flag to bypass approval prompt

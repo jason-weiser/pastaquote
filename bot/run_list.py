@@ -74,8 +74,10 @@ Please see the log for further details.""".format(total_exceeded)
         return difference
 
     def append_json(self):
+        log_this("'--add' option run")
         json_list = self.jsonfile
         lines_to_add = self.compare_return_diff(self.cached_list,self.list_location)
+        approve_each_addition = input("Would you like to approve each addition (y/n)? ")
         with open(json_list,"r") as j:
             data = json.load(j)
             working_data = data[:]
@@ -83,7 +85,18 @@ Please see the log for further details.""".format(total_exceeded)
                 if i in working_data:
                     pass
                 else:
-                    working_data.append(i)
+                    if approve_each_addition.lower() == "y" or \
+                        approve_each_addition.lower() == "yes":
+                        approve_item = input("Add: {}\n(y/n): ".format(i))
+                        if approve_item.lower() == "y" or \
+                        approve_item.lower() == "yes":
+                            working_data.append(i)
+                            log_this("{} added to list with '--add'".format(i))
+                        else:
+                            pass
+                    else:
+                        working_data.append(i)
+                        log_this("{} added to list with '--add'".format(i))
         with open((json_list), "w") as f:
             json.dump(working_data, f, indent=4)
         self.write_to_cache(self.list_location,self.cached_list)

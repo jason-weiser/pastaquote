@@ -130,6 +130,30 @@ python3 bot/bot.py --post
 	- Using your regular Python install: `01 */1 * * * python3 path/to/pastaquote/bot/bot.py --post`
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### Adding quotes to the bot
+
+There are two ways to add quotes to the bot. The first is the method mentioned above:
+ 
+```sh
+/path/to/your/venv/bin/python path/to/pastaquote/bot/bot.py --init
+```
+
+This will, however, reset numbering for sequential lists and completely reload the list a randomized bot is using, leading to the possibility of near-repeats.
+
+I've added the functionality to add to a running list without resetting the numbering or reloading it. Update your text file by adding lines and run the following:
+
+```sh
+/path/to/your/venv/bin/python path/to/pastaquote/bot/bot.py --add
+```
+This will add the lines, prompting you for approval with each line if you choose. It will not restart the list or the numbering.
+
+If you don't want to approve each line, add a "-y" to the command above:
+
+```sh
+/path/to/your/venv/bin/python path/to/pastaquote/bot/bot.py --add -y
+```
+This way you can schedule that as well. All lines added will be logged.
+
 ### Updating
 
 To update, simply download the new release and copy the contents of the folder to your current working directory.

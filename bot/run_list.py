@@ -41,6 +41,25 @@ Please see the log for further details.""".format(total_exceeded)
             print(exceeded_msg)
             log_this(exceeded_msg)
         return working_json_list
+
+    def write_to_cache(self,input_list,cache_list):
+        if input_list.startswith("http://") or \
+            input_list.startswith("https://"):
+            working_list = self.cached_list
+            if connection_validator(self.list_location) == 200:
+                with open(working_list, 'w') as f:
+                    for line in urllib.request.urlopen(self.list_location):
+                        f.write(line.decode('utf-8'))
+                return True
+            elif connection_validator(self.list_location) != 200:
+                return False
+        else:
+            with open(input_list) as immutable_list:
+                with open(cache_list, 'w') as to_cache:
+                    for item in immutable_list:
+                        to_cache.write(item)
+            return True
+
     def txt_to_list(self, input_txt):
         output_list = []
         with open(input_txt, 'r') as working1: 
@@ -49,14 +68,14 @@ Please see the log for further details.""".format(total_exceeded)
         return output_list
 
     def compare_return_diff(self, f1, f2):
-        list1 = txt_to_list(f1)
-        list2 = txt_to_list(f2)
+        list1 = self.txt_to_list(f1)
+        list2 = self.txt_to_list(f2)
         difference = set(list2).difference(set(list1))
         return difference
 
     def append_json(self):
         json_list = self.jsonfile
-        lines_to_add = compare_return_diff(self.cached_list,self.list_location)
+        lines_to_add = self.compare_return_diff(self.cached_list,self.list_location)
         with open(json_list,"r") as j:
             data = json.load(j)
             working_data = data[:]
@@ -67,26 +86,22 @@ Please see the log for further details.""".format(total_exceeded)
                     working_data.append(i)
         with open((json_list), "w") as f:
             json.dump(working_data, f, indent=4)
+
     def runit(self):
-        if self.list_location.startswith("http://") or \
-            self.list_location.startswith("https://"):
-            working_list = self.cached_list
-            if connection_validator(self.list_location) == 200:
-                with open(working_list, 'w') as f:
-                    for line in urllib.request.urlopen(self.list_location):
-                        f.write(line.decode('utf-8'))
-            else:
-                log_this("""Issue connecting to list URL: {}. Falling back by default
-                to cached list file if it exists.""".\
-                    format(connection_validator(self.list_location)))
-            json_list = self.list_to_json(working_list)
+        if self.write_to_cache(self.list_location, self.cached_list):
+            msg = "List successfully pulled from {} and added to cache".\
+                format(self.list_location)
+            print(msg)
+            log_this(msg)
         else:
-            with open(self.list_location) as immutable_list:
-                with open(self.cached_list, 'w') as to_cache:
-                    for item in immutable_list:
-                        to_cache.write(item)
-            working_list = self.cached_list
+            msg = """Issue finding list: {}. Falling back by default
+to cached list file if it exists.""".\
+                    format(connection_validator(self.list_location))
+            print(msg)
+            log_this(msg)
             json_list = self.list_to_json(working_list)
+        working_list = self.cached_list
+        json_list = self.list_to_json(working_list)
             
         working_json = os.path.join(self.parent, self.jsonfile)
         file = open(working_json, 'w')

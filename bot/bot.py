@@ -124,7 +124,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     if args.initialize:
         runlist.runit()
         make_pickle()
-        msg = "Numbering started and list converted. Ready to tweet!"
+        msg = "Numbering started and list converted. Ready to post!"
         print(msg)
         log_this("Text converted and pickle created. Initialization successful")
     #authenticates and tweets

@@ -73,11 +73,14 @@ Please see the log for further details.""".format(total_exceeded)
         difference = set(list2).difference(set(list1))
         return difference
 
-    def append_json(self):
+    def append_json(self, auto):
         log_this("'--add' option run")
         json_list = self.jsonfile
         lines_to_add = self.compare_return_diff(self.cached_list,self.list_location)
-        approve_each_addition = input("Would you like to approve each addition (y/n)? ")
+        if auto:
+            approve_each_addition = "n"
+        else:
+            approve_each_addition = input("Would you like to approve each addition (y/n)? ")
         with open(json_list,"r") as j:
             data = json.load(j)
             working_data = data[:]

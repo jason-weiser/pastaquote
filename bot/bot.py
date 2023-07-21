@@ -27,6 +27,8 @@ parser.add_argument("--post", help="posts the next item in the list", \
                     dest='post', action='store_true')
 parser.add_argument("--add", help="adds items to running list", \
                     dest='add', action='store_true')
+parser.add_argument("-y", help="approve auto-adding", \
+                    dest='yes', action='store_true')
 args=parser.parse_args()
 
 
@@ -132,7 +134,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         tweet_it()
     if args.add:
         if options['TYPE'] == 'random':
-            runlist.append_json()
+            runlist.append_json(args.yes)
         elif options['TYPE'] == 'sequential':
             runlis.runit()
             log_this("Lines added. Numbering NOT reset.")
@@ -151,5 +153,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-##TODO: add flag to bypass approval prompt

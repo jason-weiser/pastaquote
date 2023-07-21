@@ -143,14 +143,14 @@ This will, however, reset numbering for sequential lists and completely reload t
 I've added the functionality to add to a running list without resetting the numbering or reloading it. Update your text file by adding lines and run the following:
 
 ```sh
-venv/bin/python path/to/pastaquote/bot/bot.py --add
+venv/bin/python bot/bot.py --add
 ```
 This will add the lines, prompting you for approval with each line if you choose. It will not restart the list or the numbering.
 
 If you don't want to approve each line, add a "-y" to the command above:
 
 ```sh
-venv/bin/python path/to/pastaquote/bot/bot.py --add -y
+venv/bin/python bot/bot.py --add -y
 ```
 This way you can schedule that as well. All lines added will be logged.
 
@@ -175,7 +175,7 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 
 - [x] Add Mastodon
 - [x] Add hashtags
-- [ ] Add method by which you can add to actively-running list without having to reload the list
+- [x] Add method by which you can add to actively-running list without having to reload the list
 - [ ] Add Docker container (requires me learning Docker)
 - [ ] Add webpage/GUI (requires me learning Flask and/or Javascript)
 

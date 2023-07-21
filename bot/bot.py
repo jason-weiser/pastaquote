@@ -126,7 +126,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         make_pickle()
         msg = "Numbering started and list converted. Ready to post!"
         print(msg)
-        log_this("Text converted and pickle created. Initialization successful")
+        log_this(msg)
     #authenticates and tweets
     if args.post:
         tweet_it()

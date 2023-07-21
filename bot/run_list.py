@@ -86,6 +86,7 @@ Please see the log for further details.""".format(total_exceeded)
                     working_data.append(i)
         with open((json_list), "w") as f:
             json.dump(working_data, f, indent=4)
+        self.write_to_cache(self.list_location,self.cached_list)
 
     def runit(self):
         if self.write_to_cache(self.list_location, self.cached_list):

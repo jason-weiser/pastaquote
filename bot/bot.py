@@ -111,8 +111,8 @@ def lets_post():
         else:
             error_msg = """There's an issue with your list file. Either the server couldn't connect
 to the webpage or the file doesn't exist. Please fix this and run again."""
-        print(error_msg)
-        log_this(error_msg)
+            print(error_msg)
+            log_this(error_msg)
         sys.exit()
     #if there isn't a numbering file in place and you want sequential tweets
     #this makes a number file

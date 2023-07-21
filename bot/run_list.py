@@ -67,7 +67,6 @@ Please see the log for further details.""".format(total_exceeded)
                     working_data.append(i)
         with open((json_list), "w") as f:
             json.dump(working_data, f, indent=4)
-
     def runit(self):
         if self.list_location.startswith("http://") or \
             self.list_location.startswith("https://"):
@@ -82,9 +81,13 @@ Please see the log for further details.""".format(total_exceeded)
                     format(connection_validator(self.list_location)))
             json_list = self.list_to_json(working_list)
         else:
-            working_list = self.list_location 
+            with open(self.list_location) as immutable_list:
+                with open(self.cached_list, 'w') as to_cache:
+                    for item in immutable_list:
+                        to_cache.append(item.rstrip())
+            working_list = self.cached_list
             json_list = self.list_to_json(working_list)
-
+            
         working_json = os.path.join(self.parent, self.jsonfile)
         file = open(working_json, 'w')
         file.write(json.dumps(json_list, indent=4))

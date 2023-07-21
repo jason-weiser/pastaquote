@@ -13,6 +13,7 @@ class RunList:
     def __init__(self, parent, list_location):
         self.parent = parent
         self.list_location = list_location
+        self.cached_list = os.path.join(self.parent,'data/cached.txt')
 
     def validate_char(self, platform, text_row):
         if len(text_row) > pull_config(platform)["CHARACTER_LIMIT"] \
@@ -41,23 +42,84 @@ Please see the log for further details.""".format(total_exceeded)
             log_this(exceeded_msg)
         return working_json_list
 
-    def runit(self):
-        if self.list_location.startswith("http://") or \
-            self.list_location.startswith("https://"):
-            working_list = os.path.join(self.parent,'data/cached.txt')
+    def write_to_cache(self,input_list,cache_list):
+        if input_list.startswith("http://") or \
+            input_list.startswith("https://"):
+            working_list = self.cached_list
             if connection_validator(self.list_location) == 200:
                 with open(working_list, 'w') as f:
                     for line in urllib.request.urlopen(self.list_location):
                         f.write(line.decode('utf-8'))
-            else:
-                log_this("""Issue connecting to list URL: {}. Falling back by default
-                to cached list file if it exists.""".\
-                    format(connection_validator(self.list_location)))
-            json_list = self.list_to_json(working_list)
+                return True
+            elif connection_validator(self.list_location) != 200:
+                return False
         else:
-            working_list = self.list_location 
-            json_list = self.list_to_json(working_list)
+            with open(input_list) as immutable_list:
+                with open(cache_list, 'w') as to_cache:
+                    for item in immutable_list:
+                        to_cache.write(item)
+            return True
 
+    def txt_to_list(self, input_txt):
+        output_list = []
+        with open(input_txt, 'r') as working1: 
+            for i in working1:
+                output_list.append(i.rstrip())
+        return output_list
+
+    def compare_return_diff(self, f1, f2):
+        list1 = self.txt_to_list(f1)
+        list2 = self.txt_to_list(f2)
+        difference = set(list2).difference(set(list1))
+        return difference
+
+    def append_json(self, auto):
+        log_this("'--add' option run")
+        json_list = self.jsonfile
+        lines_to_add = self.compare_return_diff(self.cached_list,self.list_location)
+        if auto:
+            approve_each_addition = "n"
+        else:
+            approve_each_addition = input("Would you like to approve each addition (y/n)? ")
+        with open(json_list,"r") as j:
+            data = json.load(j)
+            working_data = data[:]
+            for i in lines_to_add:
+                if i in working_data:
+                    pass
+                else:
+                    if approve_each_addition.lower() == "y" or \
+                        approve_each_addition.lower() == "yes":
+                        approve_item = input("Add: {}\n(y/n): ".format(i))
+                        if approve_item.lower() == "y" or \
+                        approve_item.lower() == "yes":
+                            working_data.append(i)
+                            log_this("{} added to list with '--add'".format(i))
+                        else:
+                            pass
+                    else:
+                        working_data.append(i)
+                        log_this("{} added to list with '--add'".format(i))
+        with open((json_list), "w") as f:
+            json.dump(working_data, f, indent=4)
+        self.write_to_cache(self.list_location,self.cached_list)
+
+    def runit(self):
+        if self.write_to_cache(self.list_location, self.cached_list):
+            msg = "List successfully pulled from {} and added to cache".\
+                format(self.list_location)
+            print(msg)
+            log_this(msg)
+        else:
+            msg = """Issue finding list: {}. Falling back by default
+to cached list file if it exists.""".\
+                    format(connection_validator(self.list_location))
+            print(msg)
+            log_this(msg)
+            json_list = self.list_to_json(working_list)
+        working_list = self.cached_list
+        json_list = self.list_to_json(working_list)
+            
         working_json = os.path.join(self.parent, self.jsonfile)
         file = open(working_json, 'w')
         file.write(json.dumps(json_list, indent=4))

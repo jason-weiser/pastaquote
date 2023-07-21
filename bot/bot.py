@@ -1,4 +1,5 @@
 import random
+import traceback
 import json
 import pickle
 import os
@@ -24,6 +25,10 @@ parser.add_argument('--init', help='converts text list, starts numbering', \
                     dest='initialize', action="store_true")
 parser.add_argument("--post", help="posts the next item in the list", \
                     dest='post', action='store_true')
+parser.add_argument("--add", help="adds items to running list", \
+                    dest='add', action='store_true')
+parser.add_argument("-y", help="approve auto-adding", \
+                    dest='yes', action='store_true')
 args=parser.parse_args()
 
 
@@ -121,22 +126,30 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     if args.initialize:
         runlist.runit()
         make_pickle()
-        msg = "Numbering started and list converted. Ready to tweet!"
+        msg = "Numbering started and list converted. Ready to post!"
         print(msg)
-        log_this("Text converted and pickle created. Initialization successful")
+        log_this(msg)
     #authenticates and tweets
     if args.post:
         tweet_it()
-    elif not(args.post or args.initialize):
+    if args.add:
+        if options['TYPE'] == 'random':
+            runlist.append_json(args.yes)
+        elif options['TYPE'] == 'sequential':
+            runlis.runit()
+            log_this("Lines added. Numbering NOT reset.")
+        else:
+            print("Config error: please choose 'random' or 'sequential' posts.")
+    elif not(args.post or args.initialize or args.add):
         print("One argument is required. See --help for details")
         log_this("Script run without argument. Nothing posted.")
 
 def main():
     try:  
         lets_post()
-    except Exception as e: 
-        print(e)
-        log_this(e)
+    except Exception:
+        print(traceback.format_exc())
+        log_this(print(traceback.format_exc()))
 
 if __name__ == "__main__":
     main()

@@ -84,7 +84,7 @@ Please see the log for further details.""".format(total_exceeded)
             with open(self.list_location) as immutable_list:
                 with open(self.cached_list, 'w') as to_cache:
                     for item in immutable_list:
-                        to_cache.append(item.rstrip())
+                        to_cache.write(item)
             working_list = self.cached_list
             json_list = self.list_to_json(working_list)
             

@@ -1,4 +1,5 @@
 import random
+import traceback
 import json
 import pickle
 import os
@@ -138,9 +139,9 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
 def main():
     try:  
         lets_post()
-    except Exception as e: 
-        print(e)
-        log_this(e)
+    except Exception:
+        print(traceback.format_exc())
+        log_this(print(traceback.format_exc()))
 
 if __name__ == "__main__":
     main()

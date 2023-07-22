@@ -103,17 +103,17 @@ def lets_post():
         sys.exit()
     else:
         pass
-    if os.path.isfile(options['LIST_LOCATION']):
+    if os.path.isfile(where_list):
         pass
     else:
-        if connection_validator(options['LIST_LOCATION']) == 200:
+        if connection_validator(where_list) == 200:
             pass
         else:
             error_msg = """There's an issue with your list file. Either the server couldn't connect
 to the webpage or the file doesn't exist. Please fix this and run again."""
             print(error_msg)
             log_this(error_msg)
-        sys.exit()
+            sys.exit()
     #if there isn't a numbering file in place and you want sequential tweets
     #this makes a number file
     if not os.path.isfile(pickle_dir):

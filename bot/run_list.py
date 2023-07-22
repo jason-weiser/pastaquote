@@ -62,9 +62,14 @@ Please see the log for further details.""".format(total_exceeded)
 
     def txt_to_list(self, input_txt):
         output_list = []
-        with open(input_txt, 'r') as working1: 
-            for i in working1:
-                output_list.append(i.rstrip())
+        if input_txt.startswith("http://") or\
+             input_txt.startswith("https://"):
+            for line in urllib.request.urlopen(input_txt):
+                output_list.append((line.decode('utf-8')).rstrip())
+        else:
+            with open(input_txt, 'r') as working1: 
+                for i in working1:
+                    output_list.append(i.rstrip())
         return output_list
 
     def compare_return_diff(self, f1, f2):

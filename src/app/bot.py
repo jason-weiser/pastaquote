@@ -35,7 +35,7 @@ args=parser.parse_args()
 ## Find parent directory
 running_file = Path(__file__)
 current_dir = running_file.resolve().parents[0]
-parent_dir = running_file.resolve().parents[1]
+parent_dir = running_file.resolve().parents[3]
 pickle_dir = os.path.join(parent_dir, "data/number.p")
 
 ## Load the config

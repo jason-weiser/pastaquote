@@ -31,7 +31,7 @@ class RunList:
         with open(post_list, 'r') as c:
             working_json_list = []
             for row in c:
-                working_json_list.append(row.strip('\n'))
+                working_json_list.append(row.rstrip('\n'))
                 total_exceeded += self.validate_char("TWITTER",row)
                 total_exceeded += self.validate_char("MASTODON",row)
         if total_exceeded > 0:
@@ -65,11 +65,11 @@ Please see the log for further details.""".format(total_exceeded)
         if input_txt.startswith("http://") or\
              input_txt.startswith("https://"):
             for line in urllib.request.urlopen(input_txt):
-                output_list.append((line.decode('utf-8')).rstrip())
+                output_list.append((line.decode('utf-8')).rstrip('\n'))
         else:
             with open(input_txt, 'r') as working1: 
                 for i in working1:
-                    output_list.append(i.rstrip())
+                    output_list.append(i.rstrip('\n'))
         return output_list
 
     def compare_return_diff(self, f1, f2):
@@ -132,3 +132,6 @@ to cached list file if it exists.""".\
 
 if __name__ == "__main__":
     pass
+
+
+##TODO: add remove \n or [:-3] back to one of the places to stop it from adding a \n

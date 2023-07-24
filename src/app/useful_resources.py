@@ -7,7 +7,7 @@ from pathlib import Path
 ## Find parent directory
 running_file = Path(__file__)
 current_dir = running_file.resolve().parents[0]
-parent_dir = running_file.resolve().parents[1]
+parent_dir = running_file.resolve().parents[2]
 
 def log_this(input_for_log):
     ## Logging

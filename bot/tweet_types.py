@@ -15,8 +15,8 @@ def add_hashtags(base_post, where_posting):
     else:
         return base_post
 
-def r_run(parent_dir, list_loc):
-    with open(os.path.join(parent_dir, 'data/quotes.json'),"r") as json_file:
+def r_run(list_loc):
+    with open('../data/quotes.json',"r") as json_file:
         data = json.load(json_file)
         n = random.randint(0,len(data)-1)
         tweet = "{}".format(data[n])
@@ -24,23 +24,23 @@ def r_run(parent_dir, list_loc):
         working_data.pop(n)
 
     if len(working_data) == 0:
-        runlist = RunList(parent_dir,list_loc)
+        runlist = RunList(list_loc)
         runlist.runit()
     else:
-        with open(os.path.join(parent_dir,'data/quotes.json'), "w") as f:
+        with open('../data/quotes.json', "w") as f:
             json.dump(working_data, f, indent=4)
     return tweet
 
-def s_run(parent_dir):
-    with open(os.path.join(parent_dir, 'data/quotes.json')) as json_file:
+def s_run():
+    with open('../data/quotes.json') as json_file:
         data = json.load(json_file)
-        n = pickle.load(open(os.path.join(parent_dir,'data/number.p'),"rb"))
+        n = pickle.load('../data/number.p',"rb")
         tweet = "{}".format(data[n])
         if n == len(data)-1:
             n = 0
         else:
             n += 1
-        pickle.dump(n, open(os.path.join(parent_dir,'data/number.p'), "wb"))
+        pickle.dump(n, open('../data/number.p', "wb"))
     return tweet
 
 if __name__ == "__main__":

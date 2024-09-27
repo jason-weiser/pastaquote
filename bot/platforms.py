@@ -4,10 +4,12 @@ import os
 import requests
 from useful_resources import pull_config
 from requests_oauthlib import OAuth1Session
+from atproto import Client
 
 #define the config
 mastodon_cred = pull_config('MASTODON')
 twitter_cred = pull_config('TWITTER')
+bluesky_cred = pull_config('BLUESKY')
 
 
 ## What makes the magic happen re: tweets
@@ -46,3 +48,11 @@ class Masto:
         }
         resp = requests.post(self.api_url, data=parameters, headers=auth)
         return(resp.status_code)
+    
+class Bluesky:
+    client = Client()
+    def post_it(self, status):
+        user_name = bluesky_cred['USERNAME']
+        password = bluesky_cred['PASSWORD']
+        self.client.login(user_name, password)
+        self.client.send_post(text=status)

@@ -76,10 +76,11 @@ pip3 install -r requirements.txt
 cp bot/config.sample.yaml bot/config.yaml
 ```
 
-5. Get your API keys. Currently, this bot supports posting via the API to X and Mastodon. Bluesky and Threads to follow if they add the functionality. 
+5. Get your API keys. Currently, this bot supports posting via the API to X, Mastodon, and Bluesky. Threads to follow if they add the functionality. 
 	- Follow [this link](https://assets.jasonweiser.com/files/archive/x-api.html) to learn how to do it for X. I archived the page because I kept getting prompted for a login when I was reading it which was super annoying.
  		- Of note: You *may* need to add a new project and add your app to the project in the [https://developer.x.com](https://developer.x.com) area. Docs are unclear, but I was getting a lot of errors until I did this (seemingly) meaningless thing. 
-	- And [this link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so in Mastodon under the "Find your access token" header.
+	- [This link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so in Mastodon under the "Find your access token" header.
+  - [This link](https://bossagyu.com/en/blog/024-bluesky-api/) will show you how to get your app password for Bluesky. Basically it's just hamburger menu in top left > Settings > App Passwords. For username use the username for your profile without the @
 
 6. Set up your .txt file full of posts. This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.txt for an example of the file. It's just a file where each thing you want to post is a new line. Either save this to your server or to a publicly-available webpage.
 
@@ -107,6 +108,15 @@ MASTODON:
   CHARACTER_LIMIT: 500
   SKIP_TOO_LONG: False
   ENABLE_HASHTAGS: True
+  HASHTAGS: ["Hashtag","Hashtag"]
+
+BLUESKY:
+  ENABLE_PLATFORM: False
+  USERNAME: "yourusername.bsky.social"
+  PASSWORD: "12ab-3c4d-e57f-8gh9"
+  CHARACTER_LIMIT: 300
+  SKIP_TOO_LONG: False
+  ENABLE_HASHTAGS: False
   HASHTAGS: ["Hashtag","Hashtag"]
 ```
 **Of Note**:

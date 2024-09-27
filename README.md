@@ -2,7 +2,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
-This is a way to automate posting quotes to social media services (Twitter and Mastodon for now, others to follow maybe), written in Python. 
+This is a way to automate posting quotes to social media services (X and Mastodon for now, others to follow maybe), written in Python. 
 
 I was originally looking for something that could randomly pull quotes from a list and then tweet them, not repeating any until the list was run and then do it all over again. Forever.
 
@@ -17,7 +17,7 @@ Uses for this:
 - Scheduling posts in a difficult way.
 
 Uses in the wild:
-- [Twitter Dune Quote Bot](https://twitter.com/dunequotebot)
+- [X Dune Quote Bot](https://x.com/dunequotebot)
 - [Mastodon Dune Quote Bot](https://botsin.space/@dune)
 
 Let me know if, against your better judgement, you use this.
@@ -77,9 +77,9 @@ pip3 install -r requirements.txt
 cp bot/config.sample.yaml bot/config.yaml
 ```
 
-5. Get your API keys. Currently, this bot supports posting via the API to Twitter and Mastodon. Bluesky and Threads to follow if they add the functionality. 
-	- Follow [this link](https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api) to learn how to do it for Twitter. Also, good luck.
- 		- Of note: You *may* need to add a new project and add your app to the project in the [https://developer.twitter.com](https://developer.twitter.com) area. Docs are unclear, but I was getting a lot of errors until I did this (seemingly) meaningless thing. 
+5. Get your API keys. Currently, this bot supports posting via the API to X and Mastodon. Bluesky and Threads to follow if they add the functionality. 
+	- Follow [this link](https://assets.jasonweiser.com/files/archive/x-api.html) to learn how to do it for X. Also, good luck.
+ 		- Of note: You *may* need to add a new project and add your app to the project in the [https://developer.x.com](https://developer.x.com) area. Docs are unclear, but I was getting a lot of errors until I did this (seemingly) meaningless thing. 
 	- And [this link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so in Mastodon under the "Find your access token" header.
 
 6. Set up your .txt file full of posts. This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.txt for an example of the file. It's just a file where each thing you want to pot is a new line. Either save this to your server or to a publicly-available webpage.

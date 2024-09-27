@@ -35,3 +35,17 @@ MASTODON:
   SKIP_TOO_LONG: False
   ENABLE_HASHTAGS: False
   HASHTAGS: ["Hashtag","Hashtag"]
+
+BLUESKY:
+  ENABLE_PLATFORM: False
+  #Username without the @ in front of it
+  USERNAME: ""
+  #App password generated via Settings>App Passwords.
+  #Looks like 12ab-3c4d-e57f-8gh9
+  #NOT your account password
+  PASSWORD: ""
+  CHARACTER_LIMIT: 300
+  #Set this to True to skip if the post exceeds the character limit
+  SKIP_TOO_LONG: False
+  ENABLE_HASHTAGS: False
+  HASHTAGS: ["Hashtag","Hashtag"]

@@ -12,3 +12,4 @@ requests-oauthlib
 six
 tzdata
 urllib3
+atproto

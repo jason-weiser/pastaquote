@@ -10,8 +10,7 @@ import tweet_types
 from useful_resources import log_this
 from useful_resources import pull_config
 from useful_resources import connection_validator
-from platforms import Twitter
-from platforms import Masto
+from platforms import Masto, Bluesky, Twitter
 from run_list import RunList
 
 ## Arguments for command-line use
@@ -35,7 +34,7 @@ options = pull_config('SETUP')
 
 ##Define objects
 runlist = RunList(options['LIST_LOCATION'])
-destinations = ['TWITTER','MASTODON']
+destinations = ['TWITTER','MASTODON','BLUESKY']
 
 ## Program run
 
@@ -51,6 +50,8 @@ def actually_post(tweet,platform_to_post):
         platform_function = Twitter()
     elif platform_to_post == 'MASTODON':
         platform_function = Masto()
+    elif platform_to_post == 'BLUESKY':
+        platform_function = Bluesky()
     else:
         log_this("No platform defined")
     if platform_options['ENABLE_PLATFORM'] == True and \

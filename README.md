@@ -27,8 +27,7 @@ Let me know if, against your better judgement, you use this.
 
 ### Built With
 
-Built with Python3.11, but it has been tested back to Python3.8.5. Past that, I don't know. Once again, I'm not a programmer.
-
+Updated to Python3.12.6 on 9/27/2024.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -36,7 +35,7 @@ Built with Python3.11, but it has been tested back to Python3.8.5. Past that, I 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Everything on here assumes you're running Ubuntu/Debian. If you aren't, you probably know more than I do about how to install python.
+Everything on here assumes you're running a Unix-like system (e.g. Linux/MacOS). It won't work on Windows.
 
 ### Prerequisites
 
@@ -78,14 +77,14 @@ cp bot/config.sample.yaml bot/config.yaml
 ```
 
 5. Get your API keys. Currently, this bot supports posting via the API to X and Mastodon. Bluesky and Threads to follow if they add the functionality. 
-	- Follow [this link](https://assets.jasonweiser.com/files/archive/x-api.html) to learn how to do it for X. Also, good luck.
+	- Follow [this link](https://assets.jasonweiser.com/files/archive/x-api.html) to learn how to do it for X. I archived the page because I kept getting prompted for a login when I was reading it which was super annoying.
  		- Of note: You *may* need to add a new project and add your app to the project in the [https://developer.x.com](https://developer.x.com) area. Docs are unclear, but I was getting a lot of errors until I did this (seemingly) meaningless thing. 
 	- And [this link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so in Mastodon under the "Find your access token" header.
 
-6. Set up your .txt file full of posts. This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.txt for an example of the file. It's just a file where each thing you want to pot is a new line. Either save this to your server or to a publicly-available webpage.
+6. Set up your .txt file full of posts. This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.txt for an example of the file. It's just a file where each thing you want to post is a new line. Either save this to your server or to a publicly-available webpage.
 
 7. Update the config.yaml with your credentials:
-```
+```yaml
 SETUP:
   TYPE: "random"
   LIST_LOCATION: "/home/username/quotes_to_post.txt"
@@ -176,6 +175,8 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 - [x] Add Mastodon
 - [x] Add hashtags
 - [x] Add method by which you can add to actively-running list without having to reload the list
+- [ ] Add Bluesky
+- [ ] Add Threads if that's even possible
 - [ ] Add Docker container (requires me learning Docker)
 - [ ] Add webpage/GUI (requires me learning Flask and/or Javascript)
 
@@ -216,6 +217,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 ## Contact
 
 Jason Weiser 
-[@jason@weiser.social](https://weiser.social/@jason) | jason@jasonweiser.com | https://jasonweiser.com
+[@weiser@mstdn.social](https://mstdn.social/@weiser) | jason@jasonweiser.com | https://jasonweiser.com
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

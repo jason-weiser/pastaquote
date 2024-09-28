@@ -9,10 +9,12 @@ from useful_resources import pull_config
 import os
 
 class RunList:
-    jsonfile = '../data/quotes.json'
-    def __init__(self, list_location):
+    jsonfile = 'data/quotes.json'
+    def __init__(self, parent, list_location):
+        self.parent = parent
         self.list_location = list_location
-        self.cached_list = '../data/cached.txt'
+        self.cached_list = os.path.join(self.parent,'data/cached.txt')
+
 
     def validate_char(self, platform, text_row):
         if len(text_row) > pull_config(platform)["CHARACTER_LIMIT"] \
@@ -123,8 +125,9 @@ to cached list file if it exists.""".\
             json_list = self.list_to_json(working_list)
         working_list = self.cached_list
         json_list = self.list_to_json(working_list)
-            
-        file = open(self.jsonfile, 'w')
+           
+        working_json = os.path.join(self.parent, self.jsonfile)
+        file = open(working_json, 'w')
         file.write(json.dumps(json_list, indent=4))
         file.close
 

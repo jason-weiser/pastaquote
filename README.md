@@ -19,8 +19,9 @@ Uses for this:
 Uses in the wild:
 - [X Dune Quote Bot](https://x.com/dunequotebot)
 - [Mastodon Dune Quote Bot](https://botsin.space/@dune)
+- [Bluesky Dune Quote Bot](https://bsky.app/profile/dunequotes.bsky.social)
 
-Let me know if, against your better judgement, you use this.
+Basically this is just a tool I made because I wanted a Dune quote bot to exist.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -171,7 +172,7 @@ It will keep your numbering, current list position, and everything else.
 <!-- DISCLAIMER -->
 ## Disclaimer
 
-I'm not responsible for what you post with this. Please don't use it to post anything hateful or harassing. Just because you use this tool does not mean I endorse it in any way. 
+I'm not responsible for what you post with this. Please don't use it to post anything hateful or harassing. Just because you use this tool does not mean I endorse your content in any way. 
 
 Also not responsible if you use this for infringement or any other illegal activity. Please use at your own risk/discretion.
 
@@ -185,7 +186,7 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 - [x] Add Mastodon
 - [x] Add hashtags
 - [x] Add method by which you can add to actively-running list without having to reload the list
-- [ ] Add Bluesky
+- [x] Add Bluesky
 - [ ] Add Threads if that's even possible
 - [ ] Add Docker container (requires me learning Docker)
 - [ ] Add webpage/GUI (requires me learning Flask and/or Javascript)

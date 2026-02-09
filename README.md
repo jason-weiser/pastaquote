@@ -18,7 +18,7 @@ Uses for this:
 
 Uses in the wild:
 - [X Dune Quote Bot](https://x.com/dunequotebot)
-- [Mastodon Dune Quote Bot](https://botsin.space/@dune)
+- [Mastodon Dune Quote Bot](https://mastodon.social/@dunequotes)
 - [Bluesky Dune Quote Bot](https://bsky.app/profile/dunequotes.bsky.social)
 
 Basically this is just a tool I made because I wanted a Dune quote bot to exist.

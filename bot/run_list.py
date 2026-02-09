@@ -125,6 +125,7 @@ Please see the log for further details.""".format(total_exceeded)
         self.write_to_cache(self.list_location,self.cached_list)
 
     def runit(self):
+        working_list = self.cached_list
         if self.write_to_cache(self.list_location, self.cached_list):
             msg = "List successfully pulled from {} and added to cache".\
                 format(self.list_location)
@@ -137,8 +138,6 @@ to cached list file if it exists.""".\
             print(msg)
             log_this(msg)
             json_list = self.list_to_json(working_list)
-        working_list = self.cached_list
-        json_list = self.list_to_json(working_list)
            
         working_json = os.path.join(self.parent, self.jsonfile)
         file = open(working_json, 'w')

@@ -26,9 +26,13 @@ def log_this(input_for_log):
 
 def connection_validator(url_to_check):
     try:
-        response = requests.head(url_to_check)
-    except requests.ConnectionError:
-        return("Failed to Connect")
+        response = requests.head(url_to_check,
+        headers={"User-Agent": "Mozilla/5.0"}, 
+        stream=True, 
+        allow_redirects=True
+        )
+    except requests.RequestException:
+        return 0
     else:
         return response.status_code
 

@@ -26,6 +26,16 @@ class RunList:
             return 1
         else:
             return 0
+    
+    def urlopen_with_ua(self, url, timeout=20):
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":"Mozilla/5.0",
+                "Accept": "*/*"
+            },
+        )
+        return urllib.request.urlopen(req, timeout=timeout)
 
     def list_to_json(self, post_list):
         total_exceeded = 0
@@ -47,12 +57,15 @@ Please see the log for further details.""".format(total_exceeded)
         if input_list.startswith("http://") or \
             input_list.startswith("https://"):
             working_list = self.cached_list
-            if connection_validator(self.list_location) == 200:
+            status = connection_validator(self.list_location)
+            if status == 200:
                 with open(working_list, 'w') as f:
-                    for line in urllib.request.urlopen(self.list_location):
-                        f.write(line.decode('utf-8'))
+                    with self.urlopen_with_ua(self.list_location) as resp:
+                        for line in resp:
+                            f.write(line.decode('utf-8'))
                 return True
-            elif connection_validator(self.list_location) != 200:
+            else:
+                print(f"Connection validator for list got status={status} for {self.list_location}")
                 return False
         else:
             with open(input_list) as immutable_list:
@@ -65,8 +78,9 @@ Please see the log for further details.""".format(total_exceeded)
         output_list = []
         if input_txt.startswith("http://") or\
              input_txt.startswith("https://"):
-            for line in urllib.request.urlopen(input_txt):
-                output_list.append((line.decode('utf-8')).rstrip('\n'))
+            with self.urlopen_with_ua(input_txt) as resp:
+                for line in resp:
+                    output_list.append((line.decode('utf-8')).rstrip('\n'))
         else:
             with open(input_txt, 'r') as working1: 
                 for i in working1:

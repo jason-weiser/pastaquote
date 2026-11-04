@@ -28,7 +28,7 @@ Basically this is just a tool I made because I wanted a Dune quote bot to exist.
 
 ### Built With
 
-Updated to Python3.12.6 on 9/27/2024.
+Tested with Python3.14.10 on 11/04/2026.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

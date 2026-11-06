@@ -7,14 +7,27 @@ from requests_oauthlib import OAuth1Session
 from atproto import Client
 
 #define the config
-mastodon_cred = pull_config('MASTODON')
-twitter_cred = pull_config('TWITTER')
-bluesky_cred = pull_config('BLUESKY')
+platforms = ["MASTODON","TWITTER","BLUESKY","THREADS"]
+creds = {}
+for p in platforms:
+    try:
+        creds[p] = pull_config(p)
+    except:
+        error_msg = f"{p} is not present in the config. Skipping."
+        print(error_msg)
+
+twitter_cred = creds.get('TWITTER')
+mastodon_cred = creds.get('MASTODON')
+threads_cred = creds.get('THREADS')
+bluesky_cred = creds.get('BLUESKY')
+
+
 
 
 ## What makes the magic happen re: tweets
 class Twitter:
     base_url = 'https://api.twitter.com/'
+    twitter_cred = creds["TWITTER"]
 
     def __init__(self):
         self.consumer_key = (twitter_cred['TWITTER_CONSUMER_KEY'])

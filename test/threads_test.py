@@ -52,7 +52,7 @@ def post_to_threads(text):
                             "creation_id": container_id,
                             "access_token": threads_token
                         }
-    )
+                    )
     r.raise_for_status()
     return r.json()["id"]
 

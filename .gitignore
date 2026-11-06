@@ -12,6 +12,7 @@ quotes.json
 number.p
 cached.csv
 bot.log
-test/
 cached.txt
 working.txt
+threads_token.json
+test/useful_resources.py

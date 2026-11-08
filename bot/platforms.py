@@ -7,11 +7,11 @@ from requests_oauthlib import OAuth1Session
 from atproto import Client
 
 #define the config
-platforms = ["MASTODON","TWITTER","BLUESKY","THREADS"]
+platforms = pull_config("PLATFORMS")
 creds = {}
 for p in platforms:
     try:
-        creds[p] = pull_config(p)
+        creds[p] = platforms[p]
     except:
         error_msg = f"{p} is not present in the config. Skipping."
         print(error_msg)
@@ -21,19 +21,23 @@ mastodon_cred = creds.get('MASTODON')
 threads_cred = creds.get('THREADS')
 bluesky_cred = creds.get('BLUESKY')
 
-
+print(twitter_cred)
+print(bluesky_cred)
 
 
 ## What makes the magic happen re: tweets
 class Twitter:
     base_url = 'https://api.twitter.com/'
-    twitter_cred = creds["TWITTER"]
+    twitter_cred = creds.get('TWITTER')
 
     def __init__(self):
-        self.consumer_key = (twitter_cred['TWITTER_CONSUMER_KEY'])
-        self.consumer_secret = (twitter_cred['TWITTER_CONSUMER_SECRET'])
-        self.access_token = (twitter_cred['TWITTER_ACCESS_TOKEN'])
-        self.access_token_secret = (twitter_cred['TWITTER_ACCESS_TOKEN_SECRET'])
+        cred = creds.get('TWITTER')
+        if not cred:
+            raise ValueError("Twitter credentials not found in config")
+        self.consumer_key = (cred['TWITTER_CONSUMER_KEY'])
+        self.consumer_secret = (cred['TWITTER_CONSUMER_SECRET'])
+        self.access_token = (cred['TWITTER_ACCESS_TOKEN'])
+        self.access_token_secret = (cred['TWITTER_ACCESS_TOKEN_SECRET'])
         self.session = OAuth1Session(self.consumer_key,
                         client_secret=self.consumer_secret,
                         resource_owner_key=self.access_token,

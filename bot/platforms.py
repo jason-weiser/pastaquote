@@ -2,7 +2,7 @@ from pathlib import Path
 import yaml
 import os
 import requests
-from useful_resources import pull_config
+from useful_resources import log_this, pull_config
 from requests_oauthlib import OAuth1Session
 from atproto import Client
 
@@ -10,8 +10,9 @@ from atproto import Client
 try:
     platforms = pull_config('PLATFORMS')
 except KeyError:
-    msg = "Attempting to use old config. Please update config to new format, as this will likely break."
+    msg = "Attempting to use old config. Please update config to new format, as this will likely break with future updates."
     print(msg)
+    log_this(msg)
     platforms = None
 
 creds = {}
@@ -23,6 +24,7 @@ for p in platforms:
     except:
         msg = f"{p} is not present in the config. Skipping."
         print(msg)
+        log_this(msg)
 
 
 ## What makes the magic happen re: tweets
@@ -164,7 +166,10 @@ class Threads:
             }
         r = requests.post(
             "{}/{}/threads".format(threads_url,threads_id),params=params)
-        print(r.status_code, r.text)
+
+        msg = f"Threads status code & text: {r.status_code, r.text}"
+        print(msg)
+        log_this(msg)
         r.raise_for_status()
         container_id = r.json()["id"]
 

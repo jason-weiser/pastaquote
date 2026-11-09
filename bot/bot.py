@@ -45,18 +45,18 @@ def make_pickle():
     pickle.dump(initial_num, open(pickle_dir,"wb"))
 
 def actually_post(tweet,platform_to_post):
-    if platform_to_post == 'TWITTER':
-        platform_function = Twitter()
-    elif platform_to_post == 'MASTODON':
-        platform_function = Masto()
-    elif platform_to_post == 'BLUESKY':
-        platform_function = Bluesky()
-    elif platform_to_post == 'THREADS':
-        platform_function = Threads()
-    else:
-        err_msg = "No platform defined"
-        print(err_msg)
-        log_this(err_msg)
+    platform_dict = {
+        'TWITTER': Twitter,
+        'MASTODON': Masto,
+        'BLUESKY': Bluesky,
+        'THREADS': Threads
+    }
+    platform_function = platform_dict[platform_to_post]()
+    if platform_function is None:
+        msg = f"Platform ({platform_function}) not defined. Please add at least one platform to the config."
+        print(msg)
+        log_this(msg)
+
     platform_options = pull_config(platform_to_post)
     if platform_options['ENABLE_PLATFORM'] == True and \
         not platform_options['SKIP_TOO_LONG'] and \
@@ -141,10 +141,10 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
 def main():
     try:  
         lets_post()
-    except Exception:
+    except Exception as e:
         print(traceback.format_exc())
         log_this(print(traceback.format_exc()))
+        log_this(e)
 
-#if __name__ == "__main__":
-#    main()
-print(destinations)
+if __name__ == "__main__":
+    main()

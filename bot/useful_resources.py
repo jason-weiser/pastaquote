@@ -41,3 +41,5 @@ def pull_config(section):
     with open(os.path.join(current_dir,'config.yaml')) as config_yml:
         config = yaml.safe_load(config_yml)
     return config[section]
+
+##TODO add save_to_data(file) for checking if file exists and then saving to the data folder.

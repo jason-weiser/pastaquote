@@ -4,10 +4,11 @@ import logging
 import yaml
 from pathlib import Path
 
-## Find parent directory
+## Find different files
 running_file = Path(__file__)
 current_dir = running_file.resolve().parents[0]
 parent_dir = running_file.resolve().parents[1]
+pickle_dir = os.path.join(parent_dir, "data/number.p")
 
 def log_this(input_for_log):
     ## Logging

@@ -7,11 +7,9 @@ import sys
 import argparse
 import yaml
 import tweet_types
-from useful_resources import log_this
-from useful_resources import pull_config
-from useful_resources import connection_validator
+from useful_resources import log_this, pull_config, connection_validator, parent_dir, pickle_dir
 from pathlib import Path
-from platforms import Masto, Bluesky, Twitter
+from platforms import Masto, Bluesky, Twitter, Threads, platforms
 from run_list import RunList
 
 ## Arguments for command-line use
@@ -30,41 +28,40 @@ parser.add_argument("-y", help="approve auto-adding", \
                     dest='yes', action='store_true')
 args=parser.parse_args()
 
-## Find parent directory
-running_file = Path(__file__)
-current_dir = running_file.resolve().parents[0]
-parent_dir = running_file.resolve().parents[1]
-pickle_dir = os.path.join(parent_dir, "data/number.p")
 
-## Load the config
+## Load the main options from config
 options = pull_config('SETUP')
 
-##Define objects
+##Define list and posting destinations
 runlist = RunList(parent_dir, options['LIST_LOCATION'])
-destinations = ['TWITTER','MASTODON','BLUESKY']
+destinations = list(platforms)
 
 ## Program run
 
-##This is for the sequential posting, only.
+##This is for the sequential posting only.
 #https://docs.python.org/3/library/pickle.html
 def make_pickle():
     initial_num = 0
     pickle.dump(initial_num, open(pickle_dir,"wb"))
 
 def actually_post(tweet,platform_to_post):
-    platform_options = pull_config(platform_to_post)
     if platform_to_post == 'TWITTER':
         platform_function = Twitter()
     elif platform_to_post == 'MASTODON':
         platform_function = Masto()
     elif platform_to_post == 'BLUESKY':
         platform_function = Bluesky()
+    elif platform_to_post == 'THREADS':
+        platform_function = Threads()
     else:
-        log_this("No platform defined")
+        err_msg = "No platform defined"
+        print(err_msg)
+        log_this(err_msg)
+    platform_options = pull_config(platform_to_post)
     if platform_options['ENABLE_PLATFORM'] == True and \
         not platform_options['SKIP_TOO_LONG'] and \
         runlist.validate_char(platform_to_post,tweet) == 0:
-        log_this("Post attempted: {}\nResponse: {}" \
+        log_this("Attempting post: {}\nResponse: {}" \
             .format(tweet_types.add_hashtags(tweet,\
             platform_to_post), \
             platform_function.post_it(\
@@ -81,12 +78,10 @@ too long is enabled in the config. Skipping.""".format(platform_to_post))
 def tweet_it():
     if options['TYPE'] == "sequential":
         post_content = tweet_types.s_run(parent_dir)
-        for i in destinations:
-            actually_post(post_content, i)
-    elif options['TYPE'] == "random":
+    else:
         post_content = tweet_types.r_run(parent_dir,options['LIST_LOCATION'])
-        for i in destinations:
-            actually_post(post_content, i)
+    for i in destinations:
+        actually_post(post_content, i)
 
 def lets_post():
     where_list = pull_config('SETUP')['LIST_LOCATION']
@@ -150,5 +145,6 @@ def main():
         print(traceback.format_exc())
         log_this(print(traceback.format_exc()))
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
+print(destinations)

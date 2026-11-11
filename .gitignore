@@ -17,3 +17,4 @@ working.txt
 threads_token.json
 test/useful_resources.py
 __init__.py
+.DS_Store

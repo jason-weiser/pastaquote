@@ -2,8 +2,11 @@ import random
 import json
 import os
 import pickle
+import logging
 from run_list import RunList
 from useful_resources import pull_config
+
+log = logging.getLogger(__name__)
 
 def add_hashtags(base_post, where_posting):
     platform = pull_config('PLATFORMS')[where_posting]

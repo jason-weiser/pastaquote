@@ -1,10 +1,15 @@
 from pathlib import Path
 import yaml
 import os
+import sys
 import requests
-from useful_resources import log_this, pull_config
+import logging
+from useful_resources import log_this, pull_config, parent_dir, create_file_in_data, print_and_log
 from requests_oauthlib import OAuth1Session
 from atproto import Client
+
+#logs
+log = logging.getLogger(__name__)
 
 #define the config
 try:
@@ -12,7 +17,7 @@ try:
 except KeyError:
     msg = "Attempting to use old config. Please update config to new format, as this will likely break with future updates."
     print(msg)
-    log_this(msg)
+    logging.info(msg)
     platforms = None
 
 creds = {}
@@ -24,7 +29,7 @@ for p in platforms:
     except:
         msg = f"{p} is not present in the config. Skipping."
         print(msg)
-        log_this(msg)
+        logging.info(msg)
 
 
 ## What makes the magic happen re: tweets
@@ -82,21 +87,28 @@ class Bluesky:
 class Threads:
     def __init__(self):
         self.cred = creds.get('THREADS')
-        self.threads_token = "threads_token.json"
+        self.threads_token = "data/threads_token.json"
 
-    def load_threads_token():
+    def load_threads_token(self):
         with open(self.threads_token) as f:
             return json.load(f)
 
     #first-time generation of Threads token, requiring long authorization code. See README.
-    def get_first_threads_token():
+    def get_first_threads_token(self, code=None):
+        if not code:
+            code = self.cred.get('CODE')
+        if not code:
+            code = input("Please paste your code: ").strip()
+        if not code:
+            raise ValueError("No Threads code provided.")
+
         r = requests.post("https://graph.threads.net/oauth/access_token", 
             data={
                 "client_id": self.cred['APP_ID'],
                 "client_secret": self.cred['APP_SECRET'],
                 "grant_type": "authorization_code",
                 "redirect_uri": self.cred['REDIRECT_URI'],
-                "code": self.cred['CODE'],
+                "code": code,
             }
         )
 
@@ -108,7 +120,7 @@ class Threads:
             "https://graph.threads.net/access_token", 
             params={
                 "grant_type": "th_exchange_token",
-                "client_secret": cred['APP_SECRET'],
+                "client_secret": self.cred['APP_SECRET'],
                 "access_token": shortened_request["access_token"],
             }
         )
@@ -122,11 +134,10 @@ class Threads:
                 }, f
             )
         msg = "Saved a long-lived Threads token for the first time. Long Live the Token. "
-        print(msg)
-        log_this(msg)
+        return msg
 
 
-    def save_threads_token(token):
+    def save_threads_token(self, token):
         with open(self.threads_token, "w") as f:
             json.dump(
                 {
@@ -136,9 +147,9 @@ class Threads:
             )
         msg = "New Threads token saved because old one was > 7 days ago. "
         print(msg)
-        log_this(msg)
+        logging.info(msg)
 
-    def get_valid_threads_token():
+    def get_valid_threads_token(self):
         th_json_data = load_threads_token()
         age_days = (time.time() - th_json_data["refreshed_at"]) / 86400
         if age_days > 7:
@@ -169,7 +180,7 @@ class Threads:
 
         msg = f"Threads status code & text: {r.status_code, r.text}"
         print(msg)
-        log_this(msg)
+        logging.info(msg)
         r.raise_for_status()
         container_id = r.json()["id"]
 

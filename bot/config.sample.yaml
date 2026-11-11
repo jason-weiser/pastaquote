@@ -10,42 +10,61 @@ SETUP:
 #additionally, this can be a webpage. See "https://assets.jasonweiser.com/files/data/dune_quotes.txt"
 #for an example of how to structure them. Or see the README.
   LIST_LOCATION: ""
+PLATFORMS:
+  TWITTER:
+    ENABLE_PLATFORM: False
+    TWITTER_CONSUMER_KEY: ""
+    TWITTER_CONSUMER_SECRET: ""
+    TWITTER_ACCESS_TOKEN: ""
+    TWITTER_ACCESS_TOKEN_SECRET: ""
+    CHARACTER_LIMIT: 280
+    #Skip if the tweet exceeds the character limit
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
 
-TWITTER:
-  ENABLE_PLATFORM: False
-  TWITTER_CONSUMER_KEY: ""
-  TWITTER_CONSUMER_SECRET: ""
-  TWITTER_ACCESS_TOKEN: ""
-  TWITTER_ACCESS_TOKEN_SECRET: ""
-  CHARACTER_LIMIT: 280
-  #Skip if the tweet exceeds the character limit
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: False
-  HASHTAGS: ["Hashtag","Hashtag"]
+  MASTODON:
+    ENABLE_PLATFORM: False
+    MASTO_ACCESS_TOKEN: ""
+    #No trailing slash in the Mastodon base URL
+    #e.g. just "https://botsin.space", NOT "https://botsin.space/"
+    MASTO_BASE_URL: ""
+    #Set this to whatever your instance character limit is on your instance
+    CHARACTER_LIMIT: 500
+    #Set this to True to skip if the post exceeds the character limit
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
 
-MASTODON:
-  ENABLE_PLATFORM: False
-  MASTO_ACCESS_TOKEN: ""
-  #No trailing slash in the Mastodon base URL
-  #e.g. just "https://botsin.space", NOT "https://botsin.space/"
-  MASTO_BASE_URL: ""
-  #Set this to whatever your instance character limit is on your instance
-  CHARACTER_LIMIT: 500
-  #Set this to True to skip if the post exceeds the character limit
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: False
-  HASHTAGS: ["Hashtag","Hashtag"]
+  BLUESKY:
+    ENABLE_PLATFORM: False
+    #Username without the @ in front of it
+    USERNAME: ""
+    #App password generated via Settings>App Passwords.
+    #Looks like 12ab-3c4d-e57f-8gh9
+    #NOT your account password
+    PASSWORD: ""
+    CHARACTER_LIMIT: 300
+    #Set this to True to skip if the post exceeds the character limit
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
 
-BLUESKY:
-  ENABLE_PLATFORM: False
-  #Username without the @ in front of it
-  USERNAME: ""
-  #App password generated via Settings>App Passwords.
-  #Looks like 12ab-3c4d-e57f-8gh9
-  #NOT your account password
-  PASSWORD: ""
-  CHARACTER_LIMIT: 300
-  #Set this to True to skip if the post exceeds the character limit
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: False
-  HASHTAGS: ["Hashtag","Hashtag"]
+  THREADS:
+    ENABLE_PLATFORM: False
+    BASE: "https://graph.threads.net/v1.0"
+    #you actually probably want to keep the username as "me" if you followed the instructions in the README
+    USER_ID: "me"
+    #go to https://developers.facebook.com and choose the app you made
+    #go to the sidebar and choose "App settings"
+    #Threads App ID and App secret are on that page. This is NOT your token. That
+    #gets generated separately and is saved in a json file.
+    APP_ID: ""
+    APP_SECRET: ""
+    #don't forget the trailing slash. Must be exactly as you put it when you made the app
+    REDIRECT_URI: "https://example.com/"
+    CHARACTER_LIMIT: 500
+    #Set this to True to skip if the post exceeds the character limit
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]

@@ -10,20 +10,15 @@ current_dir = running_file.resolve().parents[0]
 parent_dir = running_file.resolve().parents[1]
 pickle_dir = os.path.join(parent_dir, "data/number.p")
 
-def log_this(input_for_log):
-    ## Logging
-    logging_file = os.path.join(parent_dir, 'data/bot.log')
-    if not os.path.isfile(logging_file):
-        log_file = open(logging_file, 'x')
-        log_file.close()
-
+def setup_logging(parent_dir):
+    log_path = os.path.join(parent_dir, "data", "bot.log")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
     logging.basicConfig(
         level=logging.INFO,
-        format ='%(asctime)s : %(levelname)s : %(message)s',
-        filename=logging_file,
-        filemode='a+',
+        format ='%(asctime)s : %(levelname)s : %(name)s : %(message)s',
+        filename=log_path,
+        filemode='a',
     )
-    logging.info(input_for_log)
 
 def connection_validator(url_to_check):
     try:
@@ -42,4 +37,8 @@ def pull_config(section):
         config = yaml.safe_load(config_yml)
     return config[section]
 
-##TODO add save_to_data(file) for checking if file exists and then saving to the data folder.
+def create_file_in_data(filename):
+    file = Path(parent_dir, 'data', filename)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.touch(exist_ok=True)
+    return path

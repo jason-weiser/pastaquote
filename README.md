@@ -78,6 +78,10 @@ cp bot/config.sample.yaml bot/config.yaml
 ```
 
 5. Get your API keys. Currently, this bot supports posting via the API to X, Mastodon, and Bluesky. Threads to follow if they add the functionality. 
+
+> [!IMPORTANT]  
+> X/Twitter support is depreciated and will be removed at v0.6, so please fork that release if you want to keep that functionality.
+
   - Follow [this link](https://assets.jasonweiser.com/files/archive/x-api.html) to learn how to do it for X. I archived the page because I kept getting prompted for a login when I was reading it which was super annoying.
  		- Of note: You *may* need to add a new project and add your app to the project in the [https://developer.x.com](https://developer.x.com) area. Docs are unclear, but I was getting a lot of errors until I did this (seemingly) meaningless thing. 
   - [This link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so in Mastodon under the "Find your access token" header.
@@ -90,35 +94,47 @@ cp bot/config.sample.yaml bot/config.yaml
 SETUP:
   TYPE: "random"
   LIST_LOCATION: "/home/username/quotes_to_post.txt"
-  
-TWITTER:
-  ENABLE_TWITTER: False
-  TWITTER_CONSUMER_KEY: "gibberishgibberishgibberish"
-  TWITTER_CONSUMER_SECRET: "gibberishgibberishgibberish"
-  TWITTER_ACCESS_TOKEN: "gibberishgibberishgibberish"
-  TWITTER_ACCESS_TOKEN_SECRET: "gibberishgibberishgibberish"
-  CHARACTER_LIMIT: 280
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: False
-  HASHTAGS: ["Hashtag","Hashtag"]
+PLATFORMS: 
+  TWITTER:
+    ENABLE_TWITTER: False
+    TWITTER_CONSUMER_KEY: "gibberishgibberishgibberish"
+    TWITTER_CONSUMER_SECRET: "gibberishgibberishgibberish"
+    TWITTER_ACCESS_TOKEN: "gibberishgibberishgibberish"
+    TWITTER_ACCESS_TOKEN_SECRET: "gibberishgibberishgibberish"
+    CHARACTER_LIMIT: 280
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
 
-MASTODON:
-  ENABLE_MASTODON: True
-  MASTO_ACCESS_TOKEN: "gibberishgibberishgibberish"
-  MASTO_BASE_URL: "https://example.com"
-  CHARACTER_LIMIT: 500
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: True
-  HASHTAGS: ["Hashtag","Hashtag"]
+  MASTODON:
+    ENABLE_MASTODON: True
+    MASTO_ACCESS_TOKEN: "gibberishgibberishgibberish"
+    MASTO_BASE_URL: "https://example.com"
+    CHARACTER_LIMIT: 500
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: True
+    HASHTAGS: ["Hashtag","Hashtag"]
 
-BLUESKY:
-  ENABLE_PLATFORM: False
-  USERNAME: "yourusername.bsky.social"
-  PASSWORD: "12ab-3c4d-e57f-8gh9"
-  CHARACTER_LIMIT: 300
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: False
-  HASHTAGS: ["Hashtag","Hashtag"]
+  BLUESKY:
+    ENABLE_PLATFORM: False
+    USERNAME: "yourusername.bsky.social"
+    PASSWORD: "12ab-3c4d-e57f-8gh9"
+    CHARACTER_LIMIT: 300
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
+
+  THREADS:
+    ENABLE_PLATFORM: False
+    BASE: "https://graph.threads.net/v1.0"
+    USER_ID: "me"
+    APP_ID: "12345678910111"
+    APP_SECRET: "1023a45b6cd7890ef12ghi3j456kl789"
+    REDIRECT_URI: "https://example.com/"
+    CHARACTER_LIMIT: 500
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
 ```
 **Of Note**:
 - You decide here whether you're posting in a sequential list or from random, non-repeating selections in a list.

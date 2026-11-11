@@ -8,6 +8,8 @@ from useful_resources import log_this
 from useful_resources import pull_config
 import os
 
+log = logging.getLogger(__name__) 
+
 class RunList:
     jsonfile = 'data/quotes.json'
     def __init__(self, parent, list_location):
@@ -23,7 +25,7 @@ class RunList:
             warning = "\"{}\"\nExceeds the character limit of {} set for {} by {}".format(\
                 text_row,platform_line["CHARACTER_LIMIT"],platform,\
                     len(text_row) - platform_line["CHARACTER_LIMIT"])
-            log_this(warning)
+            log.warning(warning)
             return 1
         else:
             return 0
@@ -50,7 +52,7 @@ class RunList:
 They were still processed. No action has been taken.
 Please see the log for further details.""".format(total_exceeded)
             print(exceeded_msg)
-            log_this(exceeded_msg)
+            log.warning(exceeded_msg)
         return working_json_list
 
     def write_to_cache(self,input_list,cache_list):
@@ -94,7 +96,7 @@ Please see the log for further details.""".format(total_exceeded)
         return difference
 
     def append_json(self, auto):
-        log_this("'--add' option run")
+        log.info("'--add' option run")
         json_list = self.jsonfile
         lines_to_add = self.compare_return_diff(self.cached_list,self.list_location)
         if auto:
@@ -114,12 +116,12 @@ Please see the log for further details.""".format(total_exceeded)
                         if approve_item.lower() == "y" or \
                         approve_item.lower() == "yes":
                             working_data.append(i)
-                            log_this("{} added to list with '--add'".format(i))
+                            log.info("%s added to list with '--add'", format(i))
                         else:
                             pass
                     else:
                         working_data.append(i)
-                        log_this("{} added to list with '--add'".format(i))
+                        log.info("%s added to list with '--add'", format(i))
         with open((json_list), "w") as f:
             json.dump(working_data, f, indent=4)
         self.write_to_cache(self.list_location,self.cached_list)
@@ -134,7 +136,7 @@ Please see the log for further details.""".format(total_exceeded)
 to cached list file if it exists.""".\
                     format(connection_validator(self.list_location))
         print(msg)
-        log_this(msg)
+        log.info(msg)
         
         json_list = self.list_to_json(working_list)
            

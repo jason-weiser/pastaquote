@@ -84,7 +84,8 @@ class Bluesky:
         user_name = self.cred['USERNAME']
         password = self.cred['PASSWORD']
         self.client.login(user_name, password)
-        self.client.send_post(text=status)
+        post = self.client.send_post(text=status)
+        return post.uri
 ## What makes the magic happen re:Threads
 class Threads:
     def __init__(self):

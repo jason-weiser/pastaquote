@@ -17,11 +17,12 @@ class RunList:
 
 
     def validate_char(self, platform, text_row):
-        if len(text_row) > pull_config(platform)["CHARACTER_LIMIT"] \
-            and pull_config(platform)["ENABLE_PLATFORM"]:
+        platform_line = pull_config("PLATFORMS")[platform]
+        if len(text_row) > platform_line["CHARACTER_LIMIT"] \
+            and platform_line["ENABLE_PLATFORM"]:
             warning = "\"{}\"\nExceeds the character limit of {} set for {} by {}".format(\
-                text_row,pull_config(platform)["CHARACTER_LIMIT"],platform,\
-                    len(text_row) - pull_config(platform)["CHARACTER_LIMIT"])
+                text_row,platform_line["CHARACTER_LIMIT"],platform,\
+                    len(text_row) - platform_line["CHARACTER_LIMIT"])
             log_this(warning)
             return 1
         else:
@@ -43,7 +44,6 @@ class RunList:
             working_json_list = []
             for row in c:
                 working_json_list.append(row.rstrip('\n'))
-                total_exceeded += self.validate_char("TWITTER",row)
                 total_exceeded += self.validate_char("MASTODON",row)
         if total_exceeded > 0:
             exceeded_msg = """{} posts/tweets exceeded the pre-defined character limit.

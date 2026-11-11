@@ -57,7 +57,7 @@ def actually_post(tweet,platform_to_post):
         print(msg)
         log_this(msg)
 
-    platform_options = pull_config(platform_to_post)
+    platform_options = pull_config('PLATFORMS')[platform_to_post]
     if platform_options['ENABLE_PLATFORM'] == True and \
         not platform_options['SKIP_TOO_LONG'] and \
         runlist.validate_char(platform_to_post,tweet) == 0:
@@ -141,10 +141,9 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
 def main():
     try:  
         lets_post()
-    except Exception as e:
+    except:
         print(traceback.format_exc())
         log_this(print(traceback.format_exc()))
-        log_this(e)
 
 if __name__ == "__main__":
     main()

@@ -6,7 +6,7 @@ from run_list import RunList
 from useful_resources import pull_config
 
 def add_hashtags(base_post, where_posting):
-    platform = pull_config(where_posting)
+    platform = pull_config('PLATFORMS')[where_posting]
     if platform['ENABLE_HASHTAGS']:
         base_post += "\n\n"
         for i in platform['HASHTAGS']:

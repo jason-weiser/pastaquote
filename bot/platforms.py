@@ -3,7 +3,8 @@ import yaml
 import os
 import sys
 import requests
-import logging
+import log
+import time
 from useful_resources import log_this, pull_config, parent_dir, create_file_in_data, print_and_log
 from requests_oauthlib import OAuth1Session
 from atproto import Client
@@ -17,7 +18,7 @@ try:
 except KeyError:
     msg = "Attempting to use old config. Please update config to new format, as this will likely break with future updates."
     print(msg)
-    logging.info(msg)
+    log.info(msg)
     platforms = None
 
 creds = {}
@@ -29,7 +30,7 @@ for p in platforms:
     except:
         msg = f"{p} is not present in the config. Skipping."
         print(msg)
-        logging.info(msg)
+        log.info(msg)
 
 
 ## What makes the magic happen re: tweets
@@ -72,8 +73,9 @@ class Masto:
             'status': status
         }
         resp = requests.post(self.api_url, data=parameters, headers=auth)
-        return(resp.status_code)
-    
+        status = resp.status_code
+        return(status)
+## What makes the magic happen re:skeets    
 class Bluesky:
     def __init__(self):
         self.cred = creds.get('BLUESKY')
@@ -83,7 +85,7 @@ class Bluesky:
         password = self.cred['PASSWORD']
         self.client.login(user_name, password)
         self.client.send_post(text=status)
-
+## What makes the magic happen re:Threads
 class Threads:
     def __init__(self):
         self.cred = creds.get('THREADS')
@@ -92,8 +94,16 @@ class Threads:
     def load_threads_token(self):
         with open(self.threads_token) as f:
             return json.load(f)
-
-    #first-time generation of Threads token, requiring long authorization code. See README.
+    # Replaces the Threads auth token with the value passed for 'token'. For use in the next functions.
+    def save_threads_token(self, token):
+        with open(self.threads_token, "w") as f:
+            json.dump(
+                {
+                    "access_token": token,
+                    "refreshed_at": time.time()
+                }, f
+            )
+    # first-time generation of Threads token, requiring long authorization code. See README.
     def get_first_threads_token(self, code=None):
         if not code:
             code = self.cred.get('CODE')
@@ -113,44 +123,26 @@ class Threads:
         )
 
         r.raise_for_status()
-        shortened_request = r.json()
-        print("User ID: {}".format(shortened_request["user_id"]))
+        short_lived = r.json()
+        print("User ID: {}".format(short_lived["user_id"]))
 
         r = requests.get(
             "https://graph.threads.net/access_token", 
             params={
                 "grant_type": "th_exchange_token",
                 "client_secret": self.cred['APP_SECRET'],
-                "access_token": shortened_request["access_token"],
+                "access_token": short_lived["access_token"],
             }
         )
         r.raise_for_status()
 
-        with open(self.threads_token, "w") as f:
-            json.dump(
-                {
-                    "access_token": r.json()["access_token"],
-                    "refreshed_at": time.time()
-                }, f
-            )
-        msg = "Saved a long-lived Threads token for the first time. Long Live the Token. "
-        return msg
-
-
-    def save_threads_token(self, token):
-        with open(self.threads_token, "w") as f:
-            json.dump(
-                {
-                    "access_token": token,
-                    "refreshed_at": time.time()
-                }, f
-            )
-        msg = "New Threads token saved because old one was > 7 days ago. "
+        self.save_threads_token(r.json()["access_token"])
+        msg = "Saved a long-lived Threads token for the first time. Long Live the Token."
         print(msg)
-        logging.info(msg)
+        log.info(msg)
 
     def get_valid_threads_token(self):
-        th_json_data = load_threads_token()
+        th_json_data = self.load_threads_token()
         age_days = (time.time() - th_json_data["refreshed_at"]) / 86400
         if age_days > 7:
             r = requests.get(
@@ -161,34 +153,42 @@ class Threads:
                 }
             )
             r.raise_for_status()
-            save_threads_token(r.json()["access_token"])
+            self.save_threads_token(r.json()["access_token"])
+            log.info("Refreshed Threads token because previous age was %s", age_days)
             return r.json()["access_token"]
         return th_json_data["access_token"]
 
     def post_it(self, status):
-        threads_url = self.cred['BASE']
-        threads_id = self.cred['USER_ID']
+        threads_url = self.cred.get('BASE')
+        threads_id = self.cred.get('USER_ID')
 
-        threads_token = load_threads_token()['access_token']
+        threads_token = self.get_valid_threads_token()
         params = {
             "access_token": threads_token,
             "media_type": "TEXT",
             "text": status
             }
+        # create the container
         r = requests.post(
-            "{}/{}/threads".format(threads_url,threads_id),params=params)
-
-        msg = f"Threads status code & text: {r.status_code, r.text}"
-        print(msg)
-        logging.info(msg)
-        r.raise_for_status()
+            "{}/{}/threads".format(threads_url, threads_id),params=params)
+        try:
+            r.raise_for_status()
+        except requests.exceptions.HTTPError:
+            log.error("Threads API error: %s", r.text)
+            raise
         container_id = r.json()["id"]
-
+        # Pausing for 5 seconds because Meta apparently recommends some pause between the container/publish API calls
+        time.sleep(5)
+        # now try to post the container.
         r = requests.post("{}/{}/threads_publish".format(threads_url,threads_id),
                             params= {
                                 "creation_id": container_id,
                                 "access_token": threads_token
                             }
                         )
-        r.raise_for_status()
-        return r.json()["id"]
+        try:
+            r.raise_for_status()
+        except requests.exceptions.HTTPError:
+            log.error("Threads API error: %s", r.text)
+            raise
+        return f"Successfully posted to Threads. Post id: {r.json()["id"]}"

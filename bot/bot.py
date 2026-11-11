@@ -54,36 +54,39 @@ def make_pickle():
 
 ## Despite three functions having the word 'post' in them, this is what *actually* posts. It's the last in the line
 ## and it's what interfaces with the various APIs
-def actually_post(tweet,platform_to_post):
+def actually_post(tweet, platform_to_post):
     platform_dict = {
         'TWITTER': Twitter,
         'MASTODON': Masto,
         'BLUESKY': Bluesky,
         'THREADS': Threads
     }
-    platform_function = platform_dict[platform_to_post]()
-    if platform_function is None:
-        msg = f"Platform ({platform_function}) not defined. Please add at least one platform to the config."
+    platform_name = platform_dict.get(platform_to_post)
+    if platform_name is None:
+        msg = f"Platform ({platform_to_post}) is not a valid platform. Please remove from config. Skipping."
         print(msg)
-        log.info(msg)
+        log.warning(msg)
+        return
 
     platform_options = pull_config('PLATFORMS')[platform_to_post]
-    if platform_options['ENABLE_PLATFORM'] == True and \
-        not platform_options['SKIP_TOO_LONG'] and \
-        runlist.validate_char(platform_to_post,tweet) == 0:
-        log.info("Attempting post: {}\nResponse: {}" \
-            .format(tweet_types.add_hashtags(tweet,\
-            platform_to_post), \
-            platform_function.post_it(\
-            tweet_types.add_hashtags(tweet, platform_to_post))))
-    elif platform_options['ENABLE_PLATFORM'] == False:
+    character_check = runlist.validate_char(platform_to_post, tweet)
+    if platform_options['ENABLE_PLATFORM'] and \
+        (not platform_options['SKIP_TOO_LONG'] or character_check == 0):
+        formatted_post = tweet_types.add_hashtags(tweet, platform_to_post)
+        log.info("Attempting post: %s", formatted_post)
+        try:
+            platform_class = platform_name()
+            post_id = platform_class.post_it(formatted_post)
+            log.info("%s posted successfully: %s", platform_to_post, post_id)
+        except Exception:
+            log.exception("%s failed to post.", platform_to_post)
+    elif not platform_options['ENABLE_PLATFORM']:
             log.info("{} not enabled in config. Skipping.".format(platform_to_post))
-    elif platform_options['SKIP_TOO_LONG'] and runlist.validate_char(\
-            platform_to_post,tweet):
+    elif platform_options['SKIP_TOO_LONG'] and character_check == 1:
             log.info("""Post exceeded character count for {}. Skipping posts that are
 too long is enabled in the config. Skipping.""".format(platform_to_post))
     else:
-        print("{} failed to post. Please ensure your config is correct.".format(platform_to_post))
+        print("{} failed to post. Something went very wrong.".format(platform_to_post))
 
 ## Does not actually 'tweet' anything. This tells the program which list item from you text 
 ## list to send off to the various platforms. It could be named better.
@@ -164,9 +167,6 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
                 log.info("""Threads token file exists. 
                 This is not a confirmation of validity, just existence.""")
                 sys.exit()
-
-
-
     #authenticates and tweets
     if args.post:
         tweet_it()

@@ -3,9 +3,9 @@ import yaml
 import os
 import sys
 import requests
-import log
+import logging
 import time
-from useful_resources import log_this, pull_config, parent_dir, create_file_in_data, print_and_log
+from useful_resources import pull_config, parent_dir, create_file_in_data
 from requests_oauthlib import OAuth1Session
 from atproto import Client
 

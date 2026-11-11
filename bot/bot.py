@@ -8,7 +8,7 @@ import argparse
 import yaml
 import tweet_types
 import logging
-from useful_resources import log_this, pull_config, connection_validator, parent_dir, pickle_dir, create_file_in_data, print_and_log, setup_loggin
+from useful_resources import pull_config, connection_validator, parent_dir, pickle_dir, create_file_in_data, setup_logging
 from pathlib import Path
 from platforms import Masto, Bluesky, Twitter, Threads, platforms
 from run_list import RunList

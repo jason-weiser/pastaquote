@@ -61,8 +61,15 @@ PLATFORMS:
     # gets generated separately and is saved in a json file.
     APP_ID: ""
     APP_SECRET: ""
-    # don't forget the trailing slash. Must be exactly as you put it when you made the app
-    REDIRECT_URI: "https://example.com/"
+    # don't forget the trailing slash. Must be exactly as you put it when you made the app. Feel free to use my
+    # page if you don't have one. It literally just needs to be a valid TLD with https and you only copy the code from
+    # it once. I don't see any of your data.
+    REDIRECT_URI: "https://jasonweiser.com/"
+    # Your authorization code you get from visiting https://threads.net/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&scope=threads_basic,threads_content_publish&response_type=code
+    # while logged in as the bot account on Threads who has accepted the invite. It's only valid for 60 min.
+    # If you don't provide it here you will likely be prompted for it during the initialization sequence, but 
+    # I haven't tested that so let me know if you have issues. Easier just to paste it here.
+    CODE: ""
     CHARACTER_LIMIT: 500
     # Set this to True to skip if the post exceeds the character limit
     SKIP_TOO_LONG: False

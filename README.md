@@ -17,9 +17,10 @@ Uses for this:
 - Scheduling posts in a difficult way.
 
 Uses in the wild:
-- [X Dune Quote Bot](https://x.com/dunequotebot)
 - [Mastodon Dune Quote Bot](https://mastodon.social/@dunequotes)
 - [Bluesky Dune Quote Bot](https://bsky.app/profile/dunequotes.bsky.social)
+- [Threads Dune Quote Bot](https://www.threads.com/@muaddibspeaks)
+- RETIRED:[X Dune Quote Bot](https://x.com/dunequotebot)
 
 Basically this is just a tool I made because I wanted a Dune quote bot to exist.
 
@@ -40,8 +41,12 @@ Everything on here assumes you're running a Unix-like system (e.g. Linux/MacOS).
 
 ### Prerequisites
 
-Python! Install Python if you haven't already. Your default install should be fine. 
+Python! Install Python if you haven't already. Your default install should be fine.
 
+I think it comes installed on Debian/Ubuntu. To install it on MacOS with [homebrew](https://brew.sh)run:
+```sh
+brew install python@3.14
+```
 Also, get pip if you don't have it:
 
 ```sh
@@ -50,13 +55,18 @@ sudo apt install python3-pip
 
 And, to run this in a virtual environment, you'll need the package to do that:
 
+Debian/Ubuntu
 ```sh
 sudo apt install python3-venv
+```
+MacOS
+```sh
+brew install virtualenv
 ```
 
 ## Installation
 
-It's recommended that you run Python in a virtual environment. You can also not, though. It's your machine.
+It's *highly* recommended that you run Python in a virtual environment. In fact, Debian and Ubuntu will throw up a lot of warnings if you don't.
 
 ### Clone the repo
 ```sh
@@ -65,12 +75,12 @@ git clone https://github.com/jason-weiser/pastaquote.git
 ### (optional) Set up a virtual environment
 ```sh
 cd pastaquote
-python3 -m venv venv
+python3.14 -m venv venv
 source venv/bin/activate
 ```
 ### Install the required pip modules:
 ```sh
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 ### Copy the config.yaml file:
 ```sh
@@ -108,11 +118,23 @@ Oof. Ok. Threads isn't like the others, where you get an access token or a secre
 
 1. **Get a Threads account** by *any means necessary*. That sounds ominous but they used to require an Instagram account and I'm not sure if they still do.
 
-2. **Create a Meta developer app**. I know... At least it's not Xitter, though? Go to [https://developers.facebook.com](https://developers.facebook.com) (so I think you probably need a Facebook account. Maybe tarry a bit and take in the misinformation and AI slop while you're there). Go to **My Apps** and then **Create App** Choose **Access Threads API** under use-case, pick an alluring name, and you're done with this step.
+2. **Create a Meta developer app**. I know... At least it's not Xitter, though? Go to [https://developers.facebook.com](https://developers.facebook.com) (so I think you probably need a Facebook account. Maybe tarry a bit and take in the misinformation and AI slop while you're there). 
 
-3. **Configure the App**. Go to the **left sidebar**, then **use cases**, then **customize** on the **Access the Threads API**. Under 'Permissions and features' add **threads_content_publish** ('threads_basic' is the default). Then, go to **Settings** and add  a **Redirect Callback URL**. As far as I can see this should be https and it probably can't be `localhost`. I used my main website. Nothing needs to be running there. You'll just use it to copy the auth token from the URL. If you don't own a domain, feel free to use `https://jasonweiser.com/`. I don't see these links at all, so no worries about me stealing your tokens or whatever. Copy the **Threads App ID** and **Threads App Secret** into your config as `APP_ID` and `APP_SECRET`, respectively. Additionally, copy the URL you used into the `REDIRECT_URI` **EXACTLY** as it is on the site. Then, back on the Meta dashboard, you can click **Finish Customization** and confirm.
+Go to **My Apps** and then **Create App** Choose **Access Threads API** under use-case, pick an alluring name, and you're done with this step.
 
-4. Add a bot account as a tester. In the sidebar, to to **App roles -> Roles -> Testers -> Add People**. Choose **Threads Tester** and enter the bot's Threads username. After that **log onto Threads as the bot account** (whichever account you want to actually post - this can be different from the Facebook admin account used to manage everything). **Logged into Threads as the bot** you have to accept the invite you sent yourself under **(hamburger menu at the top left-ish) Settings -> More settings -> Website permissions -> invites**.
+3. **Configure the App**. Go to the **left sidebar**, then **use cases**, then **customize** on the **Access the Threads API**. 
+
+Under 'Permissions and features' add **threads_content_publish** ('threads_basic' is the default). Then, go to **Settings** and add  a **Redirect Callback URL**. As far as I can see this should be https and it probably can't be `localhost`. I used my main website. Nothing needs to be running there. You'll just use it to copy the auth token from the URL. If you don't own a domain, feel free to use `https://jasonweiser.com/`. I don't see these links at all, so no worries about me stealing your tokens or whatever. 
+
+Copy the **Threads App ID** and **Threads App Secret** into your config as `APP_ID` and `APP_SECRET`, respectively. Additionally, copy the URL you used into the `REDIRECT_URI` **EXACTLY** as it is on the site. 
+
+Then, back on the Meta dashboard, you can click **Finish Customization** and confirm.
+
+4. **Add a bot account as a tester.** In the sidebar, to to **App roles -> Roles -> Testers -> Add People**. Choose **Threads Tester** and enter the bot's Threads username. 
+
+After that **log onto Threads as the bot account** (whichever account you want to actually post - this can be different from the Facebook admin account used to manage everything). 
+
+**Logged into Threads as the bot** you have to accept the invite you sent yourself under **(hamburger menu at the top left-ish) Settings -> More settings -> Website permissions -> invites**.
 
 5. **Authorize the app and get the code**. While logged into threads **as the bot account**, visit the following link, but fill in the details with your data:
 ```

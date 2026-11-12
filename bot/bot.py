@@ -25,6 +25,8 @@ parser.add_argument("--post", help="posts the next item in the list", \
                     dest='post', action='store_true')
 parser.add_argument("--add", help="adds items to running list", \
                     dest='add', action='store_true')
+parser.add_argument("--threads-token", help="refreshes/fetches the Threads token", \
+                    dest='threads', action='store_true')
 parser.add_argument("-y", help="approve auto-adding", \
                     dest='yes', action='store_true')
 args=parser.parse_args()
@@ -51,6 +53,29 @@ log = logging.getLogger(__name__)
 def make_pickle():
     initial_num = 0
     pickle.dump(initial_num, open(pickle_dir,"wb"))
+
+def check_threads_token(init=None):
+    try:
+        threads_check = pull_config('PLATFORMS')['THREADS']
+    except KeyError:
+        msg = "Threads is not in the config. Skipping."
+        log.info(msg)
+        return
+    if init != "init" and not threads_check.get('ENABLE_PLATFORM'):
+        return
+    threads = Threads()
+    if not os.path.isfile(threads.threads_token):
+        msg = "Threads token not present. Attempting to generate."
+        log.info(msg)
+        threads_code = threads_check.get('CODE')
+        if not threads_code:
+            threads_code = input("The CODE section in config.yaml appears to be empty. Please paste here to continue. Ctrl + C to quit.\n")
+        else:
+            threads_code = threads_check['CODE']
+        try:
+            log.info(threads.get_first_threads_token(threads_code))
+        except Exception:
+            log.exception("Failed to get Threads token")
 
 ## Despite three functions having the word 'post' in them, this is what *actually* posts. It's the last in the line
 ## and it's what interfaces with the various APIs
@@ -135,40 +160,13 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     if args.initialize:
         runlist.runit()
         make_pickle()
-        msg = "Numbering started and list converted."
+        msg = "Numbering started and list converted. List ready for posting."
         log.info(msg)
-        try:
-            threads_check = pull_config('PLATFORMS')['THREADS']
-        except KeyError:
-            msg = "Ready to post!"
-            log.info(msg)
-            sys.exit()
-        if threads_check['ENABLE_PLATFORM'] == True:
-            threads = Threads()
-            if not os.path.isfile(threads.threads_token):
-                msg = "Threads token not present. Attempting to generate."
-                log.info(msg)
-                if threads_check['CODE'] == "":
-                    threads_code = input("""The CODE section in config.yaml appears to be empty.
-                    Please paste here to continue.
-                    Ctrl + C to quit.
-                    """)
-                elif threads_check['CODE'] != "":
-                    threads_code = threads_check['CODE']
-                else:
-                    log.info("""Something is wrong with your config.yaml formatting. 
-                    Please ensure the config is in the format of config.sample.yaml""")
-                    sys.exit()
-                try:
-                    log.info(threads.get_first_threads_token(threads_code))
-                except Exception:
-                    log.exception("Failed to get Threads token")
-            else:
-                log.info("""Threads token file exists. 
-                This is not a confirmation of validity, just existence.""")
-                sys.exit()
+        if pull_config('PLATFORMS')['THREADS']['ENABLE_PLATFORM'] == True:
+            check_threads_token()
     #authenticates and tweets
     if args.post:
+        check_threads_token()
         tweet_it()
     if args.add:
         if options['TYPE'] == 'random':
@@ -179,6 +177,8 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             log.info(msg)
         else:
             print("Config error: please choose 'random' or 'sequential' posts.")
+    if args.threads:
+        check_threads_token("init")
     elif not(args.post or args.initialize or args.add):
         msg = "Script run without argument. Nothing posted. See --help for details"
         log.info(msg)
@@ -192,5 +192,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-## TODO: check time and attempt to generate threads token on threads post.

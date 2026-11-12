@@ -114,7 +114,7 @@ Of note: You *may* need to add a new project and add your app to the project in 
 
 #### Setting up Threads
 
-Oof. Ok. Threads isn't like the others, where you get an access token or a secret key and it's done. Threads has a token you need to request from them before it expires in 60 days. The process to get a token from them is annoying and cumbersome, but it *seems* like it will be pretty seamless once everything is up and running.
+Oof. Ok. Threads isn't like the others, where you get an access token or a secret key and it's done. Threads has a token you need to request from them before it expires in 60 days. The process to get a token from them is annoying and cumbersome, but it *seems* like it will be pretty seamless once everything is up and running. [This is a solid walkthrough if you want pictures](https://blog.nevinpjohn.in/posts/threads-api-public-authentication/).
 
 1. **Get a Threads account** by *any means necessary*. That sounds ominous but they used to require an Instagram account and I'm not sure if they still do.
 
@@ -142,15 +142,12 @@ https://threads.net/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&s
 ```
 Approve the request, and you'll be redirected to a different page using your redirect URL. Go to the address bar, and you'll find `?code=` followed by a loooooooong string that ends in `#_`. Copy **everything after the `=` and before the `#` at the end**. Meta puts the `#_` on every code and it is *not* part of the actual code. That is your authorization code. 
 
-6. **Get your long-lived Token**. The authorization code **expires in one hour** so you'll want to do the next part immediately. Copy the code into your config.yaml under `CODE`. Make sure `ENABLE_PLATFORM` under threads is `True` and, assuming you're still using the Python virtual environment, run:
-```python
-python3 bot/bot.py --init
-```
-or 
+6. **Get your long-lived Token**. The authorization code **expires in one hour** so you'll want to do the next part immediately. Copy the code into your config.yaml under `CODE`. Assuming you're still using the Python virtual environment, run:
+
 ```python
 python3 bot/bot.py --threads-token
 ```
-This will save the token in `data/threads-token.json`. If you post at least once every 60 days, the token should stay good forever, as the script checks the age and auto-renews with the current valid token if said token is older than seven days. If you let it lapse, change your password, or have it revoked for any reason, you'll need to repeat steps 5 and 6 to get a new authorization code.
+This will save the token in `data/threads-token.json` (technically it gets a short-lived token which then gets you the long-lived token which is saved there, but don't worry about it). If you post at least once every 60 days, the token should stay good forever, as the script checks the age and auto-renews with the current valid token if said token is older than seven days. If you let it lapse, change your password, or have it revoked for any reason, you'll need to repeat steps 5 and 6 to get a new authorization code.
 
 ### Update the config.yaml with your credentials:
 ```yaml

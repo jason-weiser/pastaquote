@@ -9,7 +9,7 @@ SETUP:
 # I use my home folder but you do you. Must have read access.
 # additionally, this can be a webpage. See "https://assets.jasonweiser.com/files/data/dune_quotes.txt"
 # for an example of how to structure them. Or see the README.
-  LIST_LOCATION: ""
+  LIST_LOCATION: "https://assets.jasonweiser.com/files/data/example.txt"
 PLATFORMS:
   TWITTER:
     ENABLE_PLATFORM: False
@@ -18,7 +18,7 @@ PLATFORMS:
     TWITTER_ACCESS_TOKEN: ""
     TWITTER_ACCESS_TOKEN_SECRET: ""
     CHARACTER_LIMIT: 280
-    #Skip if the tweet exceeds the character limit
+    # Skip if the tweet exceeds the character limit
     SKIP_TOO_LONG: False
     ENABLE_HASHTAGS: False
     HASHTAGS: ["Hashtag","Hashtag"]

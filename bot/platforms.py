@@ -90,7 +90,7 @@ class Bluesky:
 class Threads:
     def __init__(self):
         self.cred = creds.get('THREADS')
-        self.threads_token = "data/threads_token.json"
+        self.threads_token = Path(parent_dir, 'data', "threads_token.json")
 
     def load_threads_token(self):
         with open(self.threads_token) as f:

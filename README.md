@@ -2,7 +2,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
-This is a way to automate posting quotes to social media services (X, Mastodon, and Bluesky for now, others to follow maybe), written in Python. 
+This is a way to automate posting quotes to social media services (Mastodon, Bluesky, Threads, and Twitter/X for now, others to follow maybe), written in Python. 
 
 I was originally looking for something that could randomly pull quotes from a list and then tweet them, not repeating any until the list was run and then do it all over again. Forever.
 
@@ -20,7 +20,7 @@ Uses in the wild:
 - [Mastodon Dune Quote Bot](https://mastodon.social/@dunequotes)
 - [Bluesky Dune Quote Bot](https://bsky.app/profile/dunequotes.bsky.social)
 - [Threads Dune Quote Bot](https://www.threads.com/@muaddibspeaks)
-- RETIRED:[X Dune Quote Bot](https://x.com/dunequotebot)
+- RETIRED: [Twitter/X Dune Quote Bot](https://x.com/dunequotebot)
 
 Basically this is just a tool I made because I wanted a Dune quote bot to exist.
 
@@ -43,7 +43,7 @@ Everything on here assumes you're running a Unix-like system (e.g. Linux/MacOS).
 
 Python! Install Python if you haven't already. Your default install should be fine.
 
-I think it comes installed on Debian/Ubuntu. To install it on MacOS with [homebrew](https://brew.sh)run:
+I think it comes installed on Debian/Ubuntu. To install it on MacOS with [homebrew](https://brew.sh) run:
 ```sh
 brew install python@3.14
 ```
@@ -112,7 +112,7 @@ Current as of 2026: Find your user profile in the bottom-left. Click the three d
 
 #### Setting up Bluesky
 
-[This link](https://bossagyu.com/en/blog/024-bluesky-api/) will show you how to get your app password for Bluesky. Basically it's just the gear on the left-hand menu > Privacy and Security > App Passwords. For username use the username for your profile without the @. for most people this will look like `username.bsky.social`.
+Basically it's just the **gear on the left-hand menu > Privacy and Security > App Passwords**. For username use the username for your profile *with* the domain, but *without* the @. for most people this will look like `username.bsky.social`.
 
 #### Setting up Threads
 

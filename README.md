@@ -106,11 +106,13 @@ Of note: You *may* need to add a new project and add your app to the project in 
 
 #### Setting up Mastodon
 
-[This link](https://dev.to/bitsrfr/getting-started-with-the-mastodon-api-41jj) has a good description of how to do so in Mastodon under the "Find your access token" header.
+Current as of 2026: Find your user profile in the bottom-left. Click the three dots and go to Settings. Then, go to Development. Click **New Application** and name it whatever you want. As far as I know, all you need to allow in Scopes is `write:statuses`. Hit `Submit`.
+
+**Click on the name of your app** on the **Development** page. You'll see your access token. This is what goes in config.yaml.
 
 #### Setting up Bluesky
 
-[This link](https://bossagyu.com/en/blog/024-bluesky-api/) will show you how to get your app password for Bluesky. Basically it's just hamburger menu in top left > Settings > App Passwords. For username use the username for your profile without the @
+[This link](https://bossagyu.com/en/blog/024-bluesky-api/) will show you how to get your app password for Bluesky. Basically it's just the gear on the left-hand menu > Privacy and Security > App Passwords. For username use the username for your profile without the @. for most people this will look like `username.bsky.social`.
 
 #### Setting up Threads
 

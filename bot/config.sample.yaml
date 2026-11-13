@@ -1,51 +1,77 @@
 SETUP:
-#Sequential posts or random?
-#e.g. would you like the posts to loop beginning-to-end in order,
-#or would you like it to choose a post randomly each time and not use that
-#post again until the list has run through?
-#options are "sequential" or "random"
+# Sequential posts or random?
+# e.g. would you like the posts to loop beginning-to-end in order,
+# or would you like it to choose a post randomly each time and not use that
+# post again until the list has run through?
+# options are "sequential" or "random"
   TYPE: random
-#The full path of the csv of the posts you want to make.
-#I use my home folder but you do you. Must have read access.
-#additionally, this can be a webpage. See "https://assets.jasonweiser.com/files/data/dune_quotes.txt"
-#for an example of how to structure them. Or see the README.
-  LIST_LOCATION: ""
+# The full path of the text file of the posts you want to make.
+# I use my home folder but you do you. Must have read access.
+# additionally, this can be a webpage. See "https://assets.jasonweiser.com/files/data/dune_quotes.txt"
+# for an example of how to structure them. Or see the README.
+  LIST_LOCATION: "https://assets.jasonweiser.com/files/data/example.txt"
+PLATFORMS:
+  TWITTER:
+    ENABLE_PLATFORM: False
+    TWITTER_CONSUMER_KEY: ""
+    TWITTER_CONSUMER_SECRET: ""
+    TWITTER_ACCESS_TOKEN: ""
+    TWITTER_ACCESS_TOKEN_SECRET: ""
+    CHARACTER_LIMIT: 280
+    # Skip if the tweet exceeds the character limit
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
 
-TWITTER:
-  ENABLE_PLATFORM: False
-  TWITTER_CONSUMER_KEY: ""
-  TWITTER_CONSUMER_SECRET: ""
-  TWITTER_ACCESS_TOKEN: ""
-  TWITTER_ACCESS_TOKEN_SECRET: ""
-  CHARACTER_LIMIT: 280
-  #Skip if the tweet exceeds the character limit
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: False
-  HASHTAGS: ["Hashtag","Hashtag"]
+  MASTODON:
+    ENABLE_PLATFORM: False
+    MASTO_ACCESS_TOKEN: ""
+    # No trailing slash in the Mastodon base URL
+    # e.g. just "https://botsin.space", NOT "https://botsin.space/"
+    MASTO_BASE_URL: ""
+    # Set this to whatever your instance character limit is on your instance
+    CHARACTER_LIMIT: 500
+    # Set this to True to skip if the post exceeds the character limit
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
 
-MASTODON:
-  ENABLE_PLATFORM: False
-  MASTO_ACCESS_TOKEN: ""
-  #No trailing slash in the Mastodon base URL
-  #e.g. just "https://botsin.space", NOT "https://botsin.space/"
-  MASTO_BASE_URL: ""
-  #Set this to whatever your instance character limit is on your instance
-  CHARACTER_LIMIT: 500
-  #Set this to True to skip if the post exceeds the character limit
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: False
-  HASHTAGS: ["Hashtag","Hashtag"]
+  BLUESKY:
+    ENABLE_PLATFORM: False
+    # Username without the @ in front of it
+    USERNAME: ""
+    # App password generated via Settings>App Passwords.
+    # Looks like 12ab-3c4d-e57f-8gh9
+    # NOT your account password
+    PASSWORD: ""
+    CHARACTER_LIMIT: 300
+    # Set this to True to skip if the post exceeds the character limit
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]
 
-BLUESKY:
-  ENABLE_PLATFORM: False
-  #Username without the @ in front of it
-  USERNAME: ""
-  #App password generated via Settings>App Passwords.
-  #Looks like 12ab-3c4d-e57f-8gh9
-  #NOT your account password
-  PASSWORD: ""
-  CHARACTER_LIMIT: 300
-  #Set this to True to skip if the post exceeds the character limit
-  SKIP_TOO_LONG: False
-  ENABLE_HASHTAGS: False
-  HASHTAGS: ["Hashtag","Hashtag"]
+  THREADS:
+    ENABLE_PLATFORM: False
+    BASE: "https://graph.threads.net/v1.0"
+    # you actually probably want to keep the username as "me" if you followed the instructions in the README
+    USER_ID: "me"
+    # go to https://developers.facebook.com and choose the app you made
+    # go to the sidebar and choose "App settings"
+    # hreads App ID and App secret are on that page. This is NOT your token. That
+    # gets generated separately and is saved in a json file.
+    APP_ID: ""
+    APP_SECRET: ""
+    # don't forget the trailing slash. Must be exactly as you put it when you made the app. Feel free to use my
+    # page if you don't have one. It literally just needs to be a valid TLD with https and you only copy the code from
+    # it once. I don't see any of your data.
+    REDIRECT_URI: "https://jasonweiser.com/"
+    # Your authorization code you get from visiting https://threads.net/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&scope=threads_basic,threads_content_publish&response_type=code
+    # while logged in as the bot account on Threads who has accepted the invite. It's only valid for 60 min.
+    # If you don't provide it here you will likely be prompted for it during the initialization sequence, but 
+    # I haven't tested that so let me know if you have issues. Easier just to paste it here.
+    CODE: ""
+    CHARACTER_LIMIT: 500
+    # Set this to True to skip if the post exceeds the character limit
+    SKIP_TOO_LONG: False
+    ENABLE_HASHTAGS: False
+    HASHTAGS: ["Hashtag","Hashtag"]

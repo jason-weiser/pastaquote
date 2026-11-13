@@ -7,11 +7,10 @@ import sys
 import argparse
 import yaml
 import tweet_types
-from useful_resources import log_this
-from useful_resources import pull_config
-from useful_resources import connection_validator
+import logging
+from useful_resources import pull_config, connection_validator, parent_dir, pickle_dir, create_file_in_data, setup_logging
 from pathlib import Path
-from platforms import Masto, Bluesky, Twitter
+from platforms import Masto, Bluesky, Twitter, Threads, platforms
 from run_list import RunList
 
 ## Arguments for command-line use
@@ -26,74 +25,109 @@ parser.add_argument("--post", help="posts the next item in the list", \
                     dest='post', action='store_true')
 parser.add_argument("--add", help="adds items to running list", \
                     dest='add', action='store_true')
+parser.add_argument("--threads-token", help="refreshes/fetches the Threads token", \
+                    dest='threads', action='store_true')
 parser.add_argument("-y", help="approve auto-adding", \
                     dest='yes', action='store_true')
 args=parser.parse_args()
 
-## Find parent directory
-running_file = Path(__file__)
-current_dir = running_file.resolve().parents[0]
-parent_dir = running_file.resolve().parents[1]
-pickle_dir = os.path.join(parent_dir, "data/number.p")
+## Create data folder if it doesn't exist
+if not os.path.isdir(os.path.join(parent_dir, "data/")):
+    os.mkdir(os.path.join(parent_dir, "data/"))
 
-## Load the config
+## Load the main options from config
 options = pull_config('SETUP')
 
-##Define objects
+##Define list and posting destinations
 runlist = RunList(parent_dir, options['LIST_LOCATION'])
-destinations = ['TWITTER','MASTODON','BLUESKY']
+destinations = list(platforms)
+
+## Define the log
+setup_logging(parent_dir)
+log = logging.getLogger(__name__) 
 
 ## Program run
 
-##This is for the sequential posting, only.
+##This is for the sequential posting only.
 #https://docs.python.org/3/library/pickle.html
 def make_pickle():
     initial_num = 0
     pickle.dump(initial_num, open(pickle_dir,"wb"))
 
-def actually_post(tweet,platform_to_post):
-    platform_options = pull_config(platform_to_post)
-    if platform_to_post == 'TWITTER':
-        platform_function = Twitter()
-    elif platform_to_post == 'MASTODON':
-        platform_function = Masto()
-    elif platform_to_post == 'BLUESKY':
-        platform_function = Bluesky()
-    else:
-        log_this("No platform defined")
-    if platform_options['ENABLE_PLATFORM'] == True and \
-        not platform_options['SKIP_TOO_LONG'] and \
-        runlist.validate_char(platform_to_post,tweet) == 0:
-        log_this("Post attempted: {}\nResponse: {}" \
-            .format(tweet_types.add_hashtags(tweet,\
-            platform_to_post), \
-            platform_function.post_it(\
-            tweet_types.add_hashtags(tweet, platform_to_post))))
-    elif platform_options['ENABLE_PLATFORM'] == False:
-            log_this("{} not enabled in config. Skipping.".format(platform_to_post))
-    elif platform_options['SKIP_TOO_LONG'] and runlist.validate_char(\
-            platform_to_post,tweet):
-            log_this("""Post exceeded character count for {}. Skipping posts that are
+def check_threads_token(init=None):
+    try:
+        threads_check = pull_config('PLATFORMS')['THREADS']
+    except KeyError:
+        msg = "Threads is not in the config. Skipping."
+        log.info(msg)
+        return
+    if init != "init" and not threads_check.get('ENABLE_PLATFORM'):
+        return
+    threads = Threads()
+    if not os.path.isfile(threads.threads_token):
+        msg = "Threads token not present. Attempting to generate."
+        log.info(msg)
+        threads_code = threads_check.get('CODE')
+        if not threads_code:
+            threads_code = input("The CODE section in config.yaml appears to be empty. Please paste here to continue. Ctrl + C to quit.\n")
+        else:
+            threads_code = threads_check['CODE']
+        try:
+            log.info(threads.get_first_threads_token(threads_code))
+        except Exception:
+            log.exception("Failed to get Threads token")
+
+## Despite three functions having the word 'post' in them, this is what *actually* posts. It's the last in the line
+## and it's what interfaces with the various APIs
+def actually_post(tweet, platform_to_post):
+    platform_dict = {
+        'TWITTER': Twitter,
+        'MASTODON': Masto,
+        'BLUESKY': Bluesky,
+        'THREADS': Threads
+    }
+    platform_name = platform_dict.get(platform_to_post)
+    if platform_name is None:
+        msg = f"Platform ({platform_to_post}) is not a valid platform. Please remove from config. Skipping."
+        print(msg)
+        log.warning(msg)
+        return
+
+    platform_options = pull_config('PLATFORMS')[platform_to_post]
+    character_check = runlist.validate_char(platform_to_post, tweet)
+    if platform_options['ENABLE_PLATFORM'] and \
+        (not platform_options['SKIP_TOO_LONG'] or character_check == 0):
+        formatted_post = tweet_types.add_hashtags(tweet, platform_to_post)
+        log.info("Attempting post: %s", formatted_post)
+        try:
+            platform_class = platform_name()
+            post_id = platform_class.post_it(formatted_post)
+            log.info("%s posted successfully: %s", platform_to_post, post_id)
+        except Exception:
+            log.exception("%s failed to post.", platform_to_post)
+    elif not platform_options['ENABLE_PLATFORM']:
+            log.info("{} not enabled in config. Skipping.".format(platform_to_post))
+    elif platform_options['SKIP_TOO_LONG'] and character_check == 1:
+            log.info("""Post exceeded character count for {}. Skipping posts that are
 too long is enabled in the config. Skipping.""".format(platform_to_post))
     else:
-        print("{} failed to post. Please ensure your config is correct.".format(platform_to_post))
+        print("{} failed to post. Something went very wrong.".format(platform_to_post))
 
+## Does not actually 'tweet' anything. This tells the program which list item from you text 
+## list to send off to the various platforms. It could be named better.
 def tweet_it():
     if options['TYPE'] == "sequential":
         post_content = tweet_types.s_run(parent_dir)
-        for i in destinations:
-            actually_post(post_content, i)
-    elif options['TYPE'] == "random":
-        post_content = tweet_types.r_run(parent_dir,options['LIST_LOCATION'])
-        for i in destinations:
-            actually_post(post_content, i)
-
-def lets_post():
-    where_list = pull_config('SETUP')['LIST_LOCATION']
-    if not os.path.isdir(os.path.join(parent_dir, "data/")):
-        os.mkdir(os.path.join(parent_dir, "data/"))
     else:
-        pass
+        post_content = tweet_types.r_run(parent_dir,options['LIST_LOCATION'])
+    for i in destinations:
+        actually_post(post_content, i)
+
+## This is the main controller and what gets called every time by main(). I don't know what I was thinking
+## when I named these functions.
+def lets_post():
+    #checks where your list is saved and exits if 'sequential' or 'random' is not explicit
+    where_list = pull_config('SETUP')['LIST_LOCATION']
     if not (options['TYPE'] == "sequential" or options['TYPE'] == "random"):
         print("""
         You need to choose the order in which the list will run
@@ -111,44 +145,50 @@ def lets_post():
             error_msg = """There's an issue with your list file. Either the server couldn't connect
 to the webpage or the file doesn't exist. Please fix this and run again."""
             print(error_msg)
-            log_this(error_msg)
+            log.info(error_msg)
             sys.exit()
     #if there isn't a numbering file in place and you want sequential tweets
     #this makes a number file
     if not os.path.isfile(pickle_dir):
         make_pickle()
-        log_this("Numbering started and set to zero")
+        log.info("Numbering started and set to zero")
     else:
         pass
     #converts new text list to json
-    #reset all settings
+    #reset all numberings
+    #checks for Threads token and attempts to generate if it doesn't exist
     if args.initialize:
         runlist.runit()
         make_pickle()
-        msg = "Numbering started and list converted. Ready to post!"
-        print(msg)
-        log_this(msg)
+        msg = "Numbering started and list converted. List ready for posting."
+        log.info(msg)
+        if pull_config('PLATFORMS')['THREADS']['ENABLE_PLATFORM'] == True:
+            check_threads_token()
     #authenticates and tweets
     if args.post:
+        check_threads_token()
         tweet_it()
     if args.add:
         if options['TYPE'] == 'random':
             runlist.append_json(args.yes)
         elif options['TYPE'] == 'sequential':
             runlist.runit()
-            log_this("Lines added. Numbering NOT reset.")
+            msg = "Lines added. Numbering NOT reset."
+            log.info(msg)
         else:
             print("Config error: please choose 'random' or 'sequential' posts.")
+    if args.threads:
+        check_threads_token("init")
     elif not(args.post or args.initialize or args.add):
-        print("One argument is required. See --help for details")
-        log_this("Script run without argument. Nothing posted.")
+        msg = "Script run without argument. Nothing posted. See --help for details"
+        log.info(msg)
 
 def main():
     try:  
         lets_post()
     except Exception:
         print(traceback.format_exc())
-        log_this(print(traceback.format_exc()))
+        logging.exception("Something went wrong...")
 
 if __name__ == "__main__":
     main()

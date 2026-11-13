@@ -5,6 +5,7 @@ import sys
 import requests
 import logging
 import time
+import json
 from useful_resources import pull_config, parent_dir, create_file_in_data
 from requests_oauthlib import OAuth1Session
 from atproto import Client
@@ -192,4 +193,4 @@ class Threads:
         except requests.exceptions.HTTPError:
             log.error("Threads API error: %s", r.text)
             raise
-        return f"Successfully posted to Threads. Post id: {r.json()["id"]}"
+        return f"Post id: {r.json()["id"]}"

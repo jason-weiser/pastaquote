@@ -19,3 +19,4 @@ test/useful_resources.py
 __init__.py
 .DS_Store
 data/
+test.txt

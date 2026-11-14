@@ -10,7 +10,7 @@ import tweet_types
 import logging
 from useful_resources import pull_config, connection_validator, parent_dir, pickle_dir, create_file_in_data, setup_logging
 from pathlib import Path
-from platforms import Masto, Bluesky, Twitter, Threads, platforms
+from platforms import Masto, Bluesky, Threads, platforms
 from run_list import RunList
 
 ## Arguments for command-line use
@@ -81,7 +81,6 @@ def check_threads_token(init=None):
 ## and it's what interfaces with the various APIs
 def actually_post(tweet, platform_to_post):
     platform_dict = {
-        'TWITTER': Twitter,
         'MASTODON': Masto,
         'BLUESKY': Bluesky,
         'THREADS': Threads

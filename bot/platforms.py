@@ -24,7 +24,7 @@ except KeyError:
 
 creds = {}
 if not platforms:
-    platforms = ['MASTODON','TWITTER','BLUESKY','THREADS']
+    platforms = ['MASTODON','BLUESKY','THREADS']
 for p in platforms:
     try:
         creds[p] = platforms[p]
@@ -32,33 +32,6 @@ for p in platforms:
         msg = f"{p} is not present in the config. Skipping."
         print(msg)
         log.info(msg)
-
-
-## What makes the magic happen re: tweets
-class Twitter:
-    base_url = 'https://api.twitter.com/'
-
-    def __init__(self):
-        self.cred = creds.get('TWITTER')
-        if not self.cred:
-            raise ValueError("Twitter credentials not found in config")
-        self.consumer_key = self.cred['TWITTER_CONSUMER_KEY']
-        self.consumer_secret = self.cred['TWITTER_CONSUMER_SECRET']
-        self.access_token = self.cred['TWITTER_ACCESS_TOKEN']
-        self.access_token_secret = self.cred['TWITTER_ACCESS_TOKEN_SECRET']
-        self.session = OAuth1Session(self.consumer_key,
-                        client_secret=self.consumer_secret,
-                        resource_owner_key=self.access_token,
-                        resource_owner_secret=self.access_token_secret)
-
-    def post_it(self, status):
-        parameters = {
-            'text': status
-        }
-
-        url = "{}2/tweets".format(self.base_url)
-        resp = self.session.post(url, json = parameters)
-        return resp.content
 
 ## What makes the magic happen re:toots
 class Masto:

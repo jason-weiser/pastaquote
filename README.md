@@ -2,7 +2,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
-This is a way to automate posting quotes to social media services (Mastodon, Bluesky, Threads, and Twitter/X for now, others to follow maybe), written in Python. 
+This is CLI bot to automate posting lines of text to social media services (Mastodon, Bluesky, and Threads for now, others to follow maybe), written in Python. 
 
 I was originally looking for something that could randomly pull quotes from a list and then tweet them, not repeating any until the list was run and then do it all over again. Forever.
 
@@ -29,7 +29,7 @@ Basically this is just a tool I made because I wanted a Dune quote bot to exist.
 
 ### Built With
 
-Tested with Python3.14.10 on 11/04/2026.
+Tested with Python 3.14.10 on 11/04/2026.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -96,14 +96,6 @@ If you're setting up Threads, make sure the location is present in `config.yaml`
 
 Currently, this bot supports posting via the API to X, Mastodon, and Bluesky. Threads to follow if they add the functionality. 
 
-#### Setting up Twitter/X
-> [!IMPORTANT]  
-> X/Twitter support is depreciated and will be removed at v0.6, so please fork that release if you want to keep that functionality.
-
-Follow [this link](https://assets.jasonweiser.com/files/archive/x-api.html) to learn how to do it for X. I archived the page because I kept getting prompted for a login when I was reading it which was super annoying.
-
-Of note: You *may* need to add a new project and add your app to the project in the [https://developer.x.com](https://developer.x.com) area. Docs are unclear, but I was getting a lot of errors until I did this (seemingly) meaningless thing. 
-
 #### Setting up Mastodon
 
 Current as of 2026: Find your user profile in the bottom-left. Click the three dots and go to Settings. Then, go to Development. Click **New Application** and name it whatever you want. As far as I know, all you need to allow in Scopes is `write:statuses`. Hit `Submit`.
@@ -157,17 +149,6 @@ SETUP:
   TYPE: "random"
   LIST_LOCATION: "/home/username/quotes_to_post.txt"
 PLATFORMS: 
-  TWITTER:
-    ENABLE_TWITTER: False
-    TWITTER_CONSUMER_KEY: "gibberishgibberishgibberish"
-    TWITTER_CONSUMER_SECRET: "gibberishgibberishgibberish"
-    TWITTER_ACCESS_TOKEN: "gibberishgibberishgibberish"
-    TWITTER_ACCESS_TOKEN_SECRET: "gibberishgibberishgibberish"
-    CHARACTER_LIMIT: 280
-    SKIP_TOO_LONG: False
-    ENABLE_HASHTAGS: False
-    HASHTAGS: ["Hashtag","Hashtag"]
-
   MASTODON:
     ENABLE_MASTODON: True
     MASTO_ACCESS_TOKEN: "gibberishgibberishgibberish"

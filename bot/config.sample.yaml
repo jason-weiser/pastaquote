@@ -11,18 +11,6 @@ SETUP:
 # for an example of how to structure them. Or see the README.
   LIST_LOCATION: "https://assets.jasonweiser.com/files/data/example.txt"
 PLATFORMS:
-  TWITTER:
-    ENABLE_PLATFORM: False
-    TWITTER_CONSUMER_KEY: ""
-    TWITTER_CONSUMER_SECRET: ""
-    TWITTER_ACCESS_TOKEN: ""
-    TWITTER_ACCESS_TOKEN_SECRET: ""
-    CHARACTER_LIMIT: 280
-    # Skip if the tweet exceeds the character limit
-    SKIP_TOO_LONG: False
-    ENABLE_HASHTAGS: False
-    HASHTAGS: ["Hashtag","Hashtag"]
-
   MASTODON:
     ENABLE_PLATFORM: False
     MASTO_ACCESS_TOKEN: ""

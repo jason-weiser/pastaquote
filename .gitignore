@@ -20,3 +20,4 @@ __init__.py
 .DS_Store
 data/
 test.txt
+*.egg-info/

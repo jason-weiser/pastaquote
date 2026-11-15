@@ -1,11 +1,10 @@
 import json
+import os
 import urllib.request
 import logging
 import urllib.request
 from pathlib import Path
-from useful_resources import connection_validator
-from useful_resources import pull_config
-import os
+from pastaquote.useful_resources import connection_validator, pull_config
 
 log = logging.getLogger(__name__) 
 

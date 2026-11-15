@@ -6,7 +6,7 @@ import requests
 import logging
 import time
 import json
-from useful_resources import pull_config, parent_dir, create_file_in_data
+from pastaquote.useful_resources import pull_config, parent_dir, create_file_in_data
 from requests_oauthlib import OAuth1Session
 from atproto import Client
 

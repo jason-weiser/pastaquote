@@ -6,12 +6,12 @@ import os
 import sys
 import argparse
 import yaml
-import tweet_types
 import logging
-from useful_resources import pull_config, connection_validator, parent_dir, pickle_dir, create_file_in_data, setup_logging
 from pathlib import Path
-from platforms import Masto, Bluesky, Threads, platforms
-from run_list import RunList
+from pastaquote import tweet_types
+from pastaquote.useful_resources import pull_config, connection_validator, parent_dir, pickle_dir, create_file_in_data, setup_logging
+from pastaquote.platforms import Masto, Bluesky, Threads, platforms
+from pastaquote.run_list import RunList
 
 ## Arguments for command-line use
 parser = argparse.ArgumentParser(

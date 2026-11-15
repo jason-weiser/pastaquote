@@ -15,7 +15,7 @@ bot.log
 cached.txt
 working.txt
 threads_token.json
-test/useful_resources.py
+tests
 __init__.py
 .DS_Store
 data/

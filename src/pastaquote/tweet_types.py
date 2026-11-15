@@ -4,7 +4,7 @@ import os
 import pickle
 import logging
 from pastaquote.run_list import RunList
-from pastaquote.useful_resources import pull_config
+from pastaquote.config import pull_config
 
 log = logging.getLogger(__name__)
 

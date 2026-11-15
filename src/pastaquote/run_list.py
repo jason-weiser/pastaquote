@@ -4,16 +4,17 @@ import urllib.request
 import logging
 import urllib.request
 from pathlib import Path
-from pastaquote.useful_resources import connection_validator, pull_config
+from pastaquote.config import pull_config
+from pastaquote.useful_resources import connection_validator
 
 log = logging.getLogger(__name__) 
 
 class RunList:
-    jsonfile = 'data/quotes.json'
+    jsonfile = 'quotes.json'
     def __init__(self, parent, list_location):
         self.parent = parent
         self.list_location = list_location
-        self.cached_list = os.path.join(self.parent,'data/cached.txt')
+        self.cached_list = os.path.join(self.parent,'cached.txt')
 
 
     def validate_char(self, platform, text_row):

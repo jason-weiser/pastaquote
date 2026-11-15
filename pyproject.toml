@@ -12,7 +12,7 @@ dependencies = [
     "atproto>=0.0.50",
 ]
 license = { file="LICENSE" }
-requires-python = ">=3.14"
+requires-python = ">=3.13,<3.15"
 
 [project.scripts]
 pastaquote = "pastaquote.bot:main"

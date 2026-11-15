@@ -8,9 +8,10 @@ import argparse
 import yaml
 import logging
 from pathlib import Path
+from pastaquote.config import set_config_path, pull_config, platform_config, data_dir
 from pastaquote import tweet_types
-from pastaquote.useful_resources import pull_config, connection_validator, parent_dir, pickle_dir, create_file_in_data, setup_logging
-from pastaquote.platforms import Masto, Bluesky, Threads, platforms
+from pastaquote.useful_resources import connection_validator, parent_dir, setup_logging
+from pastaquote.platforms import Masto, Bluesky, Threads
 from pastaquote.run_list import RunList
 
 ## Arguments for command-line use
@@ -19,42 +20,29 @@ parser = argparse.ArgumentParser(
    )
 parser.add_argument('--process', help="run when added new items", \
                     dest="process_list", action="store_true")
+parser.add_argument('--config','-c', help="location of config.yaml", \
+                    dest="config_dest", type=str, action="store")
 parser.add_argument('--init', help='converts text list, starts numbering', \
                     dest='initialize', action="store_true")
-parser.add_argument("--post", help="posts the next item in the list", \
+parser.add_argument('--post', help="posts the next item in the list", \
                     dest='post', action='store_true')
-parser.add_argument("--add", help="adds items to running list", \
+parser.add_argument('--add', help="adds items to running list", \
                     dest='add', action='store_true')
-parser.add_argument("--threads-token", help="refreshes/fetches the Threads token", \
+parser.add_argument('--threads-token', help="refreshes/fetches the Threads token", \
                     dest='threads', action='store_true')
-parser.add_argument("-y", help="approve auto-adding", \
+parser.add_argument('-y', help="approve auto-adding", \
                     dest='yes', action='store_true')
-args=parser.parse_args()
+args = parser.parse_args()
 
-## Create data folder if it doesn't exist
-if not os.path.isdir(os.path.join(parent_dir, "data/")):
-    os.mkdir(os.path.join(parent_dir, "data/"))
+## functions
 
-## Load the main options from config
-options = pull_config('SETUP')
-
-##Define list and posting destinations
-runlist = RunList(parent_dir, options['LIST_LOCATION'])
-destinations = list(platforms)
-
-## Define the log
-setup_logging(parent_dir)
-log = logging.getLogger(__name__) 
-
-## Program run
-
-##This is for the sequential posting only.
-#https://docs.python.org/3/library/pickle.html
-def make_pickle():
+## This is for the sequential posting only.
+# https://docs.python.org/3/library/pickle.html
+def make_pickle(p_path):
     initial_num = 0
-    pickle.dump(initial_num, open(pickle_dir,"wb"))
+    pickle.dump(initial_num, open(p_path,"wb"))
 
-def check_threads_token(init=None):
+def check_threads_token(log,init=None):
     try:
         threads_check = pull_config('PLATFORMS')['THREADS']
     except KeyError:
@@ -114,7 +102,7 @@ too long is enabled in the config. Skipping.""".format(platform_to_post))
 
 ## Does not actually 'tweet' anything. This tells the program which list item from you text 
 ## list to send off to the various platforms. It could be named better.
-def tweet_it():
+def tweet_it(options):
     if options['TYPE'] == "sequential":
         post_content = tweet_types.s_run(parent_dir)
     else:
@@ -124,8 +112,10 @@ def tweet_it():
 
 ## This is the main controller and what gets called every time by main(). I don't know what I was thinking
 ## when I named these functions.
-def lets_post():
+def lets_post(options,data_directory,log):
+    runlist = RunList(data_directory, options['LIST_LOCATION'])
     #checks where your list is saved and exits if 'sequential' or 'random' is not explicit
+    p_path = Path(data_directory) / "pickle"
     where_list = pull_config('SETUP')['LIST_LOCATION']
     if not (options['TYPE'] == "sequential" or options['TYPE'] == "random"):
         print("""
@@ -148,8 +138,8 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             sys.exit()
     #if there isn't a numbering file in place and you want sequential tweets
     #this makes a number file
-    if not os.path.isfile(pickle_dir):
-        make_pickle()
+    if not os.path.isfile(p_path) and options['TYPE'] == "sequential":
+        make_pickle(p_path)
         log.info("Numbering started and set to zero")
     else:
         pass
@@ -158,36 +148,42 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     #checks for Threads token and attempts to generate if it doesn't exist
     if args.initialize:
         runlist.runit()
-        make_pickle()
-        msg = "Numbering started and list converted. List ready for posting."
+        if options['TYPE'] == "sequential":
+            make_pickle(p_path)
+        msg = "List ready for posting."
         log.info(msg)
         if pull_config('PLATFORMS')['THREADS']['ENABLE_PLATFORM'] == True:
-            check_threads_token()
+            check_threads_token(log)
     #authenticates and tweets
     if args.post:
-        check_threads_token()
-        tweet_it()
+        check_threads_token(log)
+        tweet_it(options)
     if args.add:
         if options['TYPE'] == 'random':
             runlist.append_json(args.yes)
         elif options['TYPE'] == 'sequential':
             runlist.runit()
             msg = "Lines added. Numbering NOT reset."
+            print(msg)
             log.info(msg)
         else:
             print("Config error: please choose 'random' or 'sequential' posts.")
     if args.threads:
-        check_threads_token("init")
+        check_threads_token(log,"init")
     elif not(args.post or args.initialize or args.add):
         msg = "Script run without argument. Nothing posted. See --help for details"
+        print(msg)
         log.info(msg)
 
 def main():
-    try:  
-        lets_post()
+    try:
+        set_config_path(args.config_dest)
+        destinations = list(platform_config())
+        options = pull_config('SETUP')
+        data_path = data_dir()
+        setup_logging(data_path)
+        log = logging.getLogger(__name__) 
+        lets_post(options,data_path,log)
     except Exception:
         print(traceback.format_exc())
         logging.exception("Something went wrong...")
-
-if __name__ == "__main__":
-    main()

@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 ## What makes the magic happen re:toots
 class Masto:
     def __init__(self):
-        self.cred = get_creds('MASTODON')
+        self.cred = get_platform_creds('MASTODON')
         self.api_url = '{}/api/v1/statuses'.format(self.cred['MASTO_BASE_URL'])
 
     def post_it(self, status):
@@ -32,7 +32,7 @@ class Masto:
 ## What makes the magic happen re:skeets    
 class Bluesky:
     def __init__(self):
-        self.cred = get_creds('BLUESKY')
+        self.cred = get_platform_creds('BLUESKY')
     client = Client()
     def post_it(self, status):
         user_name = self.cred['USERNAME']

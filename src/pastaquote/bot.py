@@ -67,7 +67,8 @@ def check_threads_token(log,init=None):
 
 ## Despite three functions having the word 'post' in them, this is what *actually* posts. It's the last in the line
 ## and it's what interfaces with the various APIs
-def actually_post(tweet, platform_to_post):
+def actually_post(tweet, platform_to_post, data_directory, options, log):
+    runlist = RunList(data_directory, options['LIST_LOCATION'])
     platform_dict = {
         'MASTODON': Masto,
         'BLUESKY': Bluesky,
@@ -102,20 +103,20 @@ too long is enabled in the config. Skipping.""".format(platform_to_post))
 
 ## Does not actually 'tweet' anything. This tells the program which list item from you text 
 ## list to send off to the various platforms. It could be named better.
-def tweet_it(options):
+def tweet_it(options, data_directory, destinations, log):
     if options['TYPE'] == "sequential":
-        post_content = tweet_types.s_run(parent_dir)
+        post_content = tweet_types.s_run(data_directory)
     else:
-        post_content = tweet_types.r_run(parent_dir,options['LIST_LOCATION'])
+        post_content = tweet_types.r_run(data_directory,options['LIST_LOCATION'])
     for i in destinations:
-        actually_post(post_content, i)
+        actually_post(post_content, i, data_directory, options, log)
 
 ## This is the main controller and what gets called every time by main(). I don't know what I was thinking
 ## when I named these functions.
-def lets_post(options,data_directory,log):
+def lets_post(options, data_directory, log, destinations):
     runlist = RunList(data_directory, options['LIST_LOCATION'])
     #checks where your list is saved and exits if 'sequential' or 'random' is not explicit
-    p_path = Path(data_directory) / "pickle"
+    p_path = Path(data_directory) / "number.p"
     where_list = pull_config('SETUP')['LIST_LOCATION']
     if not (options['TYPE'] == "sequential" or options['TYPE'] == "random"):
         print("""
@@ -157,7 +158,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     #authenticates and tweets
     if args.post:
         check_threads_token(log)
-        tweet_it(options)
+        tweet_it(options, data_directory, destinations, log)
     if args.add:
         if options['TYPE'] == 'random':
             runlist.append_json(args.yes)
@@ -183,7 +184,7 @@ def main():
         data_path = data_dir()
         setup_logging(data_path)
         log = logging.getLogger(__name__) 
-        lets_post(options,data_path,log)
+        lets_post(options,data_path,log,destinations)
     except Exception:
         print(traceback.format_exc())
         logging.exception("Something went wrong...")

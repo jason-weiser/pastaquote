@@ -10,12 +10,11 @@ from pastaquote.useful_resources import connection_validator
 log = logging.getLogger(__name__) 
 
 class RunList:
-    jsonfile = 'quotes.json'
     def __init__(self, parent, list_location):
         self.parent = parent
         self.list_location = list_location
         self.cached_list = os.path.join(self.parent,'cached.txt')
-
+        self.jsonfile = Path(parent) / "quotes.json"
 
     def validate_char(self, platform, text_row):
         platform_line = pull_config("PLATFORMS")[platform]
@@ -115,12 +114,12 @@ Please see the log for further details.""".format(total_exceeded)
                         if approve_item.lower() == "y" or \
                         approve_item.lower() == "yes":
                             working_data.append(i)
-                            log.info("%s added to list with '--add'", format(i))
+                            log.info("'%s' added.", format(i))
                         else:
                             pass
                     else:
                         working_data.append(i)
-                        log.info("%s added to list with '--add'", format(i))
+                        log.info("'%s' added.", format(i))
         with open((json_list), "w") as f:
             json.dump(working_data, f, indent=4)
         self.write_to_cache(self.list_location,self.cached_list)
@@ -148,4 +147,5 @@ if __name__ == "__main__":
     pass
 
 
-##TODO: add remove \n or [:-3] back to one of the places to stop it from adding a \n
+# TODO: add remove \n or [:-3] back to one of the places to stop it from adding a \n
+# TODO: clean up and simply the add-lines flow.

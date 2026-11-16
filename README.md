@@ -13,8 +13,7 @@ The implementations in this code are probably not the best implementations or ev
 Uses for this:
 
 - Posting anything to social media in a sequential manner (e.g. if you wanted to post a book or song line-by-line).
-- Posting stuff in a random, non-repeatable manner.
-- Scheduling posts in a difficult way.
+- Posting stuff in a random, non-repeating manner.
 
 Uses in the wild:
 - [Mastodon Dune Quote Bot](https://mastodon.social/@dunequotes)
@@ -41,51 +40,55 @@ Everything on here assumes you're running a Unix-like system (e.g. Linux/MacOS).
 
 ### Prerequisites
 
-Python! Install Python if you haven't already. Your default install should be fine.
+Install the uv package manager for Python:
 
-I think it comes installed on Debian/Ubuntu. To install it on MacOS with [homebrew](https://brew.sh) run:
-```sh
-brew install python@3.14
-```
-Also, get pip if you don't have it:
+#### Linux
 
-```sh
-sudo apt install python3-pip
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-And, to run this in a virtual environment, you'll need the package to do that:
+#### MacOS with [homebrew](https://brew.sh)
 
-Debian/Ubuntu
-```sh
-sudo apt install python3-venv
-```
-MacOS
-```sh
-brew install virtualenv
+```bash
+brew install uv
 ```
 
 ## Installation
 
-It's *highly* recommended that you run Python in a virtual environment. In fact, Debian and Ubuntu will throw up a lot of warnings if you don't.
+```sh
+uv tool install --python 3.14 git+https://github.com/jason-weiser/pastaquote.git
+```
+That will install it so you can use `pastaquote` in the terminal.
 
-### Clone the repo
+### Make a folder where your config will live:
+
 ```sh
-git clone https://github.com/jason-weiser/pastaquote.git
+mkdir -p ~/pastaquote/bot
+cd ~/pastaquote/bot
+wget https://raw.githubusercontent.com/jason-weiser/pastaquote/debff71bf6237db771c77045292bfc058317ab6f/bot/config.sample.yaml
+mv config.sample.yaml config.yaml
 ```
-### (optional) Set up a virtual environment
-```sh
-cd pastaquote
-python3.14 -m venv venv
-source venv/bin/activate
+
+This can be anywhere the user running `pastaquote` has read/write permissions, but the folder structure will end up looking like this, with `data/` being generated automatically.
 ```
-### Install the required pip modules:
-```sh
-pip install -r requirements.txt
+~/pastaquote/bot1/
+├── config.yaml
+└── data/          # created automatically
+    ├── quotes.json
+    ├── number.p
+    ├── threads_token.json
+    └── bot.log
+~/pastaquote/bot2/
+├── config.yaml
+└── data/          # created automatically
+    ├── quotes.json
+    ├── number.p
+    ├── threads_token.json
+    └── bot.log
 ```
-### Copy the config.yaml file:
-```sh
-cp bot/config.sample.yaml bot/config.yaml
-```
+It's like this so you can have multiple bots running from the same install.
+
 ### Set up your .txt file full of posts. 
 
 This can either be a file on your system (must have read permissions), or it can be a webpage. See https://assets.jasonweiser.com/files/data/dune_quotes.txt for an example of the file. It's just a file where each thing you want to post is a new line. Either save this to your server or to a publicly-available webpage.
@@ -94,7 +97,7 @@ If you're setting up Threads, make sure the location is present in `config.yaml`
 
 ### Get your API keys. 
 
-Currently, this bot supports posting via the API to X, Mastodon, and Bluesky. Threads to follow if they add the functionality. 
+Currently, this bot supports posting via the API to Mastodon, Bluesky, and Threads. Twitter/X was recently depreciated because they [blocked free access to the API](https://docs.x.com/changelog#launch-of-x-api-pay-per-use-pricing) after it was bought by a billionaire who appreciates [efficiency](https://www.courthousenews.com/over-14-million-people-could-die-from-us-foreign-aid-cuts-study-finds-on-usaids-last-day/) and [ hand gestures from a very particular period of German history](https://assets.jasonweiser.com/files/gifs/Musk4ngEeLeHzwCoP1.gif).
 
 #### Setting up Mastodon
 
@@ -144,6 +147,8 @@ python3 bot/bot.py --threads-token
 This will save the token in `data/threads-token.json` (technically it gets a short-lived token which then gets you the long-lived token which is saved there, but don't worry about it). If you post at least once every 60 days, the token should stay good forever, as the script checks the age and auto-renews with the current valid token if said token is older than seven days. If you let it lapse, change your password, or have it revoked for any reason, you'll need to repeat steps 5 and 6 to get a new authorization code.
 
 ### Update the config.yaml with your credentials:
+edit your config.yaml, wherever it lives:
+
 ```yaml
 SETUP:
   TYPE: "random"
@@ -188,24 +193,24 @@ PLATFORMS:
 
 ### Run the initialization
 ```sh
-python3 bot/bot.py --init
+pastaquote init
 ```
 ### If that didn't throw out any errors, try your first post!
 ```sh
-python3 bot/bot.py --post
+pastaquote post
 ```
 ### You schedule via cronjob, so you do that how many times a day you want with the following text. This will be for every hour, for example.
 
-- If you use a virtual environment: `01 */1 * * * /path/to/your/venv/bin/python path/to/pastaquote/bot/bot.py --post`
-- Using your regular Python install: `01 */1 * * * python3 path/to/pastaquote/bot/bot.py --post`
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+```sh
+01 */1 * * * pastaquote post`
+```
 
 ## Adding quotes to the bot
 
 There are two ways to add quotes to the bot. The first is the method mentioned above:
 (from the pastaquote folder)
 ```sh
-venv/bin/python path/to/pastaquote/bot/bot.py --init
+pastaquote init
 ```
 
 This will, however, reset numbering for sequential lists and completely reload the list a randomized bot is using, leading to the possibility of near-repeats.
@@ -213,21 +218,33 @@ This will, however, reset numbering for sequential lists and completely reload t
 I've added the functionality to add to a running list without resetting the numbering or reloading it. Update your text file by adding lines and run the following:
 
 ```sh
-venv/bin/python bot/bot.py --add
+pastaquote add
 ```
 This will add the lines, prompting you for approval with each line if you choose. It will not restart the list or the numbering.
 
 If you don't want to approve each line, add a "-y" to the command above:
 
 ```sh
-venv/bin/python bot/bot.py --add -y
+pastaquote add -y
 ```
 This way you can schedule that as well. All lines added will be logged.
 
 ## Updating
 
-To update, simply download the new release and copy the contents of the folder to your current working directory.
-It will keep your numbering, current list position, and everything else.
+```sh
+pastaquote update
+```
+or
+```sh
+uv tool upgrade pastaquote
+```
+
+If you *know* there's a new release and neither of those seem to be working:
+
+```sh
+uv tool install --python 3.14 --reinstall git+https://github.com/jason-weiser/pastaquote.git
+```
+
 
 <!-- DISCLAIMER -->
 ## Disclaimer
@@ -249,7 +266,7 @@ Additionally, like I said above, I'm not a programmer. This comes with no warran
 - [x] Add Bluesky
 - [x] Add Threads if that's even possible
 - [ ] Add Docker container (requires me learning Docker)
-- [ ] Add webpage/GUI (requires me learning Flask and/or Javascript)
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

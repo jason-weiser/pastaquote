@@ -18,31 +18,36 @@ from pastaquote.run_list import RunList
 parser = argparse.ArgumentParser(
     description='A command line python bot to tweet from a text list'
    )
-parser.add_argument('--process', help="run when added new items", \
-                    dest="process_list", action="store_true")
 parser.add_argument('--config','-c', help="location of config.yaml", \
                     dest="config_dest", type=str, action="store")
-parser.add_argument('--init', help='converts text list, starts numbering', \
+parser.add_argument('init', 'initialize', help='converts text list, starts numbering', \
                     dest='initialize', action="store_true")
-parser.add_argument('--post', help="posts the next item in the list", \
+parser.add_argument('post', help="posts the next item in the list", \
                     dest='post', action='store_true')
-parser.add_argument('--add', help="adds items to running list", \
+parser.add_argument('add', help="adds items to running list", \
                     dest='add', action='store_true')
-parser.add_argument('--threads-token', help="refreshes/fetches the Threads token", \
+parser.add_argument('check-threads-token', help="refreshes/fetches the Threads token", \
                     dest='threads', action='store_true')
 parser.add_argument('-y', help="approve auto-adding", \
                     dest='yes', action='store_true')
 args = parser.parse_args()
 
-## functions
+### Logs
+log = logging.getLogger(__name__)
+
+# functions
 
 ## This is for the sequential posting only.
 # https://docs.python.org/3/library/pickle.html
+
 def make_pickle(p_path):
     initial_num = 0
     pickle.dump(initial_num, open(p_path,"wb"))
 
-def check_threads_token(log,init=None):
+## Check to see if threads is enabled/present and, if so, check the token
+## if token doesn't exist, it attempts to fetch it based on auth code
+
+def check_threads_token(init=None):
     try:
         threads_check = pull_config('PLATFORMS')['THREADS']
     except KeyError:
@@ -67,7 +72,8 @@ def check_threads_token(log,init=None):
 
 ## Despite three functions having the word 'post' in them, this is what *actually* posts. It's the last in the line
 ## and it's what interfaces with the various APIs
-def actually_post(tweet, platform_to_post, data_directory, options, log):
+
+def post_with_api(tweet, platform_to_post, data_directory, options):
     runlist = RunList(data_directory, options['LIST_LOCATION'])
     platform_dict = {
         'MASTODON': Masto,
@@ -101,33 +107,35 @@ too long is enabled in the config. Skipping.""".format(platform_to_post))
     else:
         print("{} failed to post. Something went very wrong.".format(platform_to_post))
 
-## Does not actually 'tweet' anything. This tells the program which list item from you text 
+## This tells the program which list item from you text 
 ## list to send off to the various platforms. It could be named better.
-def tweet_it(options, data_directory, destinations, log):
+
+def choose_post_type(options, data_directory, destinations):
     if options['TYPE'] == "sequential":
         post_content = tweet_types.s_run(data_directory)
     else:
         post_content = tweet_types.r_run(data_directory,options['LIST_LOCATION'])
-    for i in destinations:
-        actually_post(post_content, i, data_directory, options, log)
+    for p in destinations:
+        post_with_api(post_content, p, data_directory, options)
 
 ## This is the main controller and what gets called every time by main(). I don't know what I was thinking
 ## when I named these functions.
-def lets_post(options, data_directory, log, destinations):
+
+def check_and_route(options, data_directory, destinations):
     runlist = RunList(data_directory, options['LIST_LOCATION'])
     #checks where your list is saved and exits if 'sequential' or 'random' is not explicit
     p_path = Path(data_directory) / "number.p"
-    where_list = pull_config('SETUP')['LIST_LOCATION']
+    list_location = pull_config('SETUP')['LIST_LOCATION']
     if not (options['TYPE'] == "sequential" or options['TYPE'] == "random"):
         print("""
         You need to choose the order in which the list will run
         Please edit the config file in config.yaml
         """)
         sys.exit()
-    if os.path.isfile(where_list):
+    if os.path.isfile(list_location):
         pass
     else:
-        if connection_validator(where_list) == 200:
+        if connection_validator(list_location) == 200:
             pass
         else:
             error_msg = """There's an issue with your list file. Either the server couldn't connect
@@ -139,7 +147,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     #this makes a number file
     if not os.path.isfile(p_path) and options['TYPE'] == "sequential":
         make_pickle(p_path)
-        log.info("Numbering started and set to zero")
+        log.info("Numbering started and set to zero.")
     else:
         pass
     #converts new text list to json
@@ -151,12 +159,11 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             make_pickle(p_path)
         msg = "List ready for posting."
         log.info(msg)
-        if pull_config('PLATFORMS')['THREADS']['ENABLE_PLATFORM'] == True:
-            check_threads_token(log)
+        check_threads_token(init)
     #authenticates and tweets
     if args.post:
-        check_threads_token(log)
-        tweet_it(options, data_directory, destinations, log)
+        check_threads_token()
+        choose_post_type(options, data_directory, destinations)
     if args.add:
         if options['TYPE'] == 'random':
             runlist.append_json(args.yes)
@@ -168,7 +175,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         else:
             print("Config error: please choose 'random' or 'sequential' posts.")
     if args.threads:
-        check_threads_token(log,"init")
+        check_threads_token("init")
     elif not(args.post or args.initialize or args.add):
         msg = "Script run without argument. Nothing posted. See --help for details"
         print(msg)
@@ -183,9 +190,11 @@ def main():
         destinations = list(platform_config())
         options = pull_config('SETUP')
         data_path = data_dir()
-        setup_logging(data_path)
-        log = logging.getLogger(__name__) 
-        lets_post(options,data_path,log,destinations)
+        setup_logging(data_path) 
+        lets_post(options, data_path, destinations)
     except Exception:
         print(traceback.format_exc())
         logging.exception("Something went wrong...")
+
+# TODO: Subprocess updater with argparser
+# TODO: single word args (how?)

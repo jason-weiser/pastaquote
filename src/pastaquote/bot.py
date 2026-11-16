@@ -124,8 +124,6 @@ def lets_post(options, data_directory, log, destinations):
         Please edit the config file in config.yaml
         """)
         sys.exit()
-    else:
-        pass
     if os.path.isfile(where_list):
         pass
     else:
@@ -177,6 +175,9 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         log.info(msg)
 
 def main():
+    if not args.config_dest:
+        print("You need to specify a config.yaml. Do so with 'pastaquote --config /path/to/config.yaml'")
+        sys.exit()
     try:
         set_config_path(args.config_dest)
         destinations = list(platform_config())

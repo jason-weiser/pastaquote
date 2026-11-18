@@ -6,37 +6,17 @@ import requests
 import logging
 import time
 import json
-from useful_resources import pull_config, parent_dir, create_file_in_data
+from pastaquote.config import pull_config, get_platform_creds
 from requests_oauthlib import OAuth1Session
 from atproto import Client
 
 #logs
 log = logging.getLogger(__name__)
 
-#define the config
-try:
-    platforms = pull_config('PLATFORMS')
-except KeyError:
-    msg = "Attempting to use old config. Please update config to new format, as this will likely break with future updates."
-    print(msg)
-    log.info(msg)
-    platforms = None
-
-creds = {}
-if not platforms:
-    platforms = ['MASTODON','BLUESKY','THREADS']
-for p in platforms:
-    try:
-        creds[p] = platforms[p]
-    except:
-        msg = f"{p} is not present in the config. Skipping."
-        print(msg)
-        log.info(msg)
-
 ## What makes the magic happen re:toots
 class Masto:
     def __init__(self):
-        self.cred = creds.get('MASTODON')
+        self.cred = get_platform_creds('MASTODON')
         self.api_url = '{}/api/v1/statuses'.format(self.cred['MASTO_BASE_URL'])
 
     def post_it(self, status):
@@ -52,7 +32,7 @@ class Masto:
 ## What makes the magic happen re:skeets    
 class Bluesky:
     def __init__(self):
-        self.cred = creds.get('BLUESKY')
+        self.cred = get_platform_creds('BLUESKY')
     client = Client()
     def post_it(self, status):
         user_name = self.cred['USERNAME']
@@ -63,7 +43,7 @@ class Bluesky:
 ## What makes the magic happen re:Threads
 class Threads:
     def __init__(self):
-        self.cred = creds.get('THREADS')
+        self.cred = get_creds('THREADS')
         self.threads_token = Path(parent_dir, 'data', "threads_token.json")
 
     def load_threads_token(self):
@@ -167,3 +147,5 @@ class Threads:
             log.error("Threads API error: %s", r.text)
             raise
         return f"Post id: {r.json()["id"]}"
+
+#TODO: change Threads token location to new data folder!

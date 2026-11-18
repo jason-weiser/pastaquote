@@ -52,7 +52,7 @@ def make_pickle(p_path):
 ## Check to see if threads is enabled/present and, if so, check the token
 ## if token doesn't exist, it attempts to fetch it based on auth code
 
-def check_threads_token(init=False, code=None):
+def check_threads_token(data_directory, init=False, code=None):
     try:
         threads_check = pull_config('PLATFORMS')['THREADS']
     except KeyError:
@@ -61,7 +61,7 @@ def check_threads_token(init=False, code=None):
         return
     if init != "init" and not threads_check.get('ENABLE_PLATFORM'):
         return
-    threads = Threads()
+    threads = Threads(data_directory)
     if not os.path.isfile(threads.threads_token):
         msg = "Threads token not present. Attempting to generate."
         log.info(msg)
@@ -181,7 +181,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             log.info("Numbering started and set to zero.")
         msg = "List ready for posting."
         log.info(msg)
-        check_threads_token(init=True, code=args.token_paste)
+        check_threads_token(data_directory, init=True, code=args.token_paste)
     #authenticates and tweets
     if args.command == 'post':
         check_threads_token()

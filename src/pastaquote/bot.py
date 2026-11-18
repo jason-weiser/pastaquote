@@ -181,10 +181,10 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             log.info("Numbering started and set to zero.")
         msg = "List ready for posting."
         log.info(msg)
-        check_threads_token(data_directory, init=True, code=args.token_paste)
+        check_threads_token(data_directory, init=True)
     #authenticates and tweets
     if args.command == 'post':
-        check_threads_token(data_directory, init=False, code=args.token_paste)
+        check_threads_token(data_directory, init=False)
         choose_post_type(options, data_directory, destinations)
     if args.command == 'add-lines':
         if options['TYPE'] == 'random':

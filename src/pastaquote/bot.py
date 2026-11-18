@@ -140,7 +140,7 @@ def self_updater():
         [uv, "tool", "upgrade", "pastaquote"],
         capture_output=True, text=True,
     )
-    output = result.stout + result.stderr
+    output = result.stdout + result.stderr
     print(output)
     if result.returncode !=0:
         response = f"Update failed. Return code: {output.returncode}"

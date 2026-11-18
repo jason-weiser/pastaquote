@@ -43,7 +43,7 @@ class Bluesky:
 ## What makes the magic happen re:Threads
 class Threads:
     def __init__(self):
-        self.cred = get_creds('THREADS')
+        self.cred = get_platform_creds('THREADS')
         self.threads_token = Path(parent_dir, 'data', "threads_token.json")
 
     def load_threads_token(self):

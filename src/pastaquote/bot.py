@@ -197,10 +197,9 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         else:
             print("Config error: please choose 'random' or 'sequential' posts.")
     if args.command == "update":
-        try:
-            update_response = self_updater()
-            log.info(update_response)
-            print(update_response)
+        update_response = self_updater()
+        log.info(update_response)
+        print(update_response)
     if args.command == 'threads-token':
         check_threads_token(init=True, code=args.token_paste)
 

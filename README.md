@@ -61,7 +61,25 @@ uv tool install --python 3.14 git+https://github.com/jason-weiser/pastaquote.git
 ```
 That will install it so you can use `pastaquote` in the terminal.
 
-### Make a folder where your config will live:
+### Decide where your config will live.
+
+There are two ways to do this:
+
+#### 1. Generate it automatically in ~/.config/pastaquote
+
+If you only plan to use Pastaquote with one bot, this is the simplest option. Run:
+
+```sh
+pastaquote setup
+```
+
+and it will generate the file at ~/.config/pastaquote/config.yaml
+
+#### 2. Keep it wherever you want
+
+If you want to use Pastaquote with multiple *bots*, to post different things on different accounts, decide where you want those configs to live.
+
+Here's an example:
 
 ```sh
 mkdir -p ~/pastaquote/bot
@@ -70,7 +88,8 @@ wget https://raw.githubusercontent.com/jason-weiser/pastaquote/debff71bf6237db77
 mv config.sample.yaml config.yaml
 ```
 
-This can be anywhere the user running `pastaquote` has read/write permissions, but the folder structure will end up looking like this, with `data/` being generated automatically.
+This can be anywhere the user running `pastaquote` has read/write permissions, but the folder structure will end up looking like this, with `data/` being generated automatically:
+
 ```
 ~/pastaquote/bot1/
 ├── config.yaml
@@ -97,7 +116,7 @@ If you're setting up Threads, make sure the location is present in `config.yaml`
 
 ### Get your API keys. 
 
-Currently, this bot supports posting via the API to Mastodon, Bluesky, and Threads. Twitter/X was recently depreciated because they [blocked free access to the API](https://docs.x.com/changelog#launch-of-x-api-pay-per-use-pricing) after it was bought by a billionaire who appreciates [efficiency](https://www.courthousenews.com/over-14-million-people-could-die-from-us-foreign-aid-cuts-study-finds-on-usaids-last-day/) and [ hand gestures from a very particular period of German history](https://assets.jasonweiser.com/files/gifs/Musk4ngEeLeHzwCoP1.gif).
+Currently, this bot supports posting via the API to Mastodon, Bluesky, and Threads. Twitter/X was recently depreciated because they [blocked free access to the API](https://docs.x.com/changelog#launch-of-x-api-pay-per-use-pricing) after it was bought by a billionaire who appreciates [efficiency](https://www.courthousenews.com/over-14-million-people-could-die-from-us-foreign-aid-cuts-study-finds-on-usaids-last-day/) and [hand gestures from a very specific period of German history](https://assets.jasonweiser.com/files/gifs/Musk4ngEeLeHzwCoP1.gif).
 
 #### Setting up Mastodon
 
@@ -141,13 +160,13 @@ Approve the request, and you'll be redirected to a different page using your red
 
 6. **Get your long-lived Token**. The authorization code **expires in one hour** so you'll want to do the next part immediately. Copy the code into your config.yaml under `CODE`. Assuming you're still using the Python virtual environment, run:
 
-```python
-python3 bot/bot.py --threads-token
+```sh
+pastaquote threads-token
 ```
 This will save the token in `data/threads-token.json` (technically it gets a short-lived token which then gets you the long-lived token which is saved there, but don't worry about it). If you post at least once every 60 days, the token should stay good forever, as the script checks the age and auto-renews with the current valid token if said token is older than seven days. If you let it lapse, change your password, or have it revoked for any reason, you'll need to repeat steps 5 and 6 to get a new authorization code.
 
 ### Update the config.yaml with your credentials:
-edit your config.yaml, wherever it lives:
+edit your config.yaml, wherever it lives (default is `~/.config/pastaquote/config.yaml`):
 
 ```yaml
 SETUP:
@@ -191,9 +210,13 @@ PLATFORMS:
 - If you want hashtags, please change `False` to `True` (no quotes) and add however many hashtags you want. These will go on all *future* posts.
 - The config will not enforce character limits by default, but instead will throw up warnings. If you mark "SKIP_TOO_LONG" to True, it will skip any that are too long for that particular service. You can see a list of any posts that are too long in the log.
 
-### Run the initialization
+### Run the setup
+
+> [!IMPORTANT]
+> If you're not using the default install, be sure to add in your config location (e.g. `pastaquote -c /path/to/config.yaml setup`) for each of these steps between `pastaquote` and the command.
+
 ```sh
-pastaquote init
+pastaquote setup
 ```
 ### If that didn't throw out any errors, try your first post!
 ```sh
@@ -210,7 +233,7 @@ pastaquote post
 There are two ways to add quotes to the bot. The first is the method mentioned above:
 (from the pastaquote folder)
 ```sh
-pastaquote init
+pastaquote setup
 ```
 
 This will, however, reset numbering for sequential lists and completely reload the list a randomized bot is using, leading to the possibility of near-repeats.
@@ -218,14 +241,14 @@ This will, however, reset numbering for sequential lists and completely reload t
 I've added the functionality to add to a running list without resetting the numbering or reloading it. Update your text file by adding lines and run the following:
 
 ```sh
-pastaquote add
+pastaquote add-lines
 ```
 This will add the lines, prompting you for approval with each line if you choose. It will not restart the list or the numbering.
 
 If you don't want to approve each line, add a "-y" to the command above:
 
 ```sh
-pastaquote add -y
+pastaquote add-lines -y
 ```
 This way you can schedule that as well. All lines added will be logged.
 

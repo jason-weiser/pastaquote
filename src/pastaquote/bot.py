@@ -8,6 +8,7 @@ import argparse
 import yaml
 import logging
 import shutil
+import subprocess
 from importlib.resources import files
 from pathlib import Path
 from pastaquote.config import set_config_path, pull_config, platform_config, data_dir
@@ -121,6 +122,32 @@ def choose_post_type(options, data_directory, destinations):
     for p in destinations:
         post_with_api(post_content, p, data_directory, options)
 
+
+def self_updater():
+    msg = "Update attempted via self update."
+    print(msg)
+    log.info(msg)
+    if "uv/tools" not in sys.prefix:
+        response = "It seems you didn't install with uv. Please update the way you installed."
+        return response
+    uv = shutil.which("uv")
+    if not uv:
+        response = "Couldn't find uv in your path. Update not successful."
+        return response
+    result = subprocess.run(
+        [uv, "tool", "upgrade", "pastaquote"],
+        capture_output=True, text=True,
+    )
+    output = result.stout + result.stderr
+    print(output)
+    if result.returncode !=0:
+        response = f"Update failed. Return code: {output.returncode}"
+    elif "Nothing to upgrade" in output:
+        response = "Pastaquote is already up-to-date."
+    else:
+        response = "Pastaquote updated!"
+    return response
+
 ## This is the main controller and what gets called every time by main(). I don't know what I was thinking
 ## when I named these functions.
 
@@ -171,6 +198,12 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             log.info(msg)
         else:
             print("Config error: please choose 'random' or 'sequential' posts.")
+    if args.command == "update":
+        try:
+            update_response = self_updater()
+            log.info(update_response)
+            print(update_response)
+
     if args.command == 'threads-token':
         check_threads_token(init=True, code=args.token_paste)
 

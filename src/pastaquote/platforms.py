@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 ## What makes the magic happen re:toots
 class Masto:
-    def __init__(self):
+    def __init__(self, parent):
         self.cred = get_platform_creds('MASTODON')
         self.api_url = '{}/api/v1/statuses'.format(self.cred['MASTO_BASE_URL'])
 
@@ -31,7 +31,7 @@ class Masto:
         return(status)
 ## What makes the magic happen re:skeets    
 class Bluesky:
-    def __init__(self):
+    def __init__(self, parent):
         self.cred = get_platform_creds('BLUESKY')
     client = Client()
     def post_it(self, status):
@@ -42,7 +42,8 @@ class Bluesky:
         return post.uri
 ## What makes the magic happen re:Threads
 class Threads:
-    def __init__(self):
+    def __init__(self, parent):
+        self.parent = parent_dir
         self.cred = get_platform_creds('THREADS')
         self.threads_token = Path(parent_dir, 'data', "threads_token.json")
 

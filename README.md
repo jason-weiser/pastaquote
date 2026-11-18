@@ -84,7 +84,7 @@ Here's an example:
 ```sh
 mkdir -p ~/pastaquote/bot
 cd ~/pastaquote/bot
-wget https://raw.githubusercontent.com/jason-weiser/pastaquote/debff71bf6237db771c77045292bfc058317ab6f/bot/config.sample.yaml
+wget https://github.com/jason-weiser/pastaquote/blob/master/src/pastaquote/config.sample.yaml
 mv config.sample.yaml config.yaml
 ```
 

@@ -29,6 +29,7 @@ setup_p = sub.add_parser('setup', help='converts text list, starts numbering')
 setup_p.add_argument('-t', '--token', help="(optional) paste Threads auth token in command line",\
                       dest="token_paste", type=str, action="store")
 sub.add_parser('post', help="posts the next item in the list")
+sub.add_parser('update', help="Checks and installs updates from Github if you installed via uv.")
 add_p = sub.add_parser('add-lines', help="adds items to running list")
 add_p.add_argument('-y', '--yes', help="(optional) approve additions to list without review",\
                     action='store_true')
@@ -122,6 +123,7 @@ def choose_post_type(options, data_directory, destinations):
     for p in destinations:
         post_with_api(post_content, p, data_directory, options)
 
+## Pretty self-explanatory. Updates via subprocess. Returns text to print/log
 
 def self_updater():
     msg = "Update attempted via self update."
@@ -148,8 +150,7 @@ def self_updater():
         response = "Pastaquote updated!"
     return response
 
-## This is the main controller and what gets called every time by main(). I don't know what I was thinking
-## when I named these functions.
+## This is the main controller and what gets called every time by main().
 
 def check_and_route(args, options, data_directory, destinations):
     runlist = RunList(data_directory, options['LIST_LOCATION'])
@@ -173,9 +174,6 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             print(error_msg)
             log.info(error_msg)
             sys.exit()
-    #converts new text list to json
-    #reset all numberings
-    #checks for Threads token and attempts to generate if it doesn't exist
     if args.command == 'setup':
         runlist.runit()
         if options['TYPE'] == "sequential":
@@ -203,7 +201,6 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             update_response = self_updater()
             log.info(update_response)
             print(update_response)
-
     if args.command == 'threads-token':
         check_threads_token(init=True, code=args.token_paste)
 

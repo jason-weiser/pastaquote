@@ -43,9 +43,9 @@ class Bluesky:
 ## What makes the magic happen re:Threads
 class Threads:
     def __init__(self, parent):
-        self.parent = parent_dir
+        self.parent_dir = parent
         self.cred = get_platform_creds('THREADS')
-        self.threads_token = Path(parent_dir, 'data', "threads_token.json")
+        self.threads_token = Path(self.parent_dir, 'data', "threads_token.json")
 
     def load_threads_token(self):
         with open(self.threads_token) as f:

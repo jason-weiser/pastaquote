@@ -7,12 +7,15 @@ import sys
 import argparse
 import yaml
 import logging
+import shutil
+from importlib.resources import files
 from pathlib import Path
 from pastaquote.config import set_config_path, pull_config, platform_config, data_dir
 from pastaquote import tweet_types
 from pastaquote.useful_resources import connection_validator, parent_dir, setup_logging
 from pastaquote.platforms import Masto, Bluesky, Threads
 from pastaquote.run_list import RunList
+DEFAULT_CONFIG = Path.home() / ".config" / "pastaquote"
 
 ## Arguments for command-line use
 parser = argparse.ArgumentParser(
@@ -173,18 +176,38 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
 
 def main():
     args = parser.parse_args()
-    if not args.config_dest:
-        print("You need to specify a config.yaml. Do so with 'pastaquote --config /path/to/config.yaml'")
-        sys.exit()
+    sample = files("pastaquote") / "config.sample.yaml"
+    default_config_yaml = Path(DEFAULT_CONFIG) / "config.yaml"
+    if not args.config_dest and not os.path.exists(default_config_yaml):
+        print(f"No config specified. Default config folder does not exist. Creating {DEFAULT_CONFIG}")
+        try:
+            DEFAULT_CONFIG.mkdir(parents=True, exist_ok=True)
+            default_config_yaml.write_text(sample.read_text())
+        except Exception as e:
+            print(f"Creation of default config directory failed. Please check permissions and try again. Error: {e}")
+            raise        
+        if os.path.exists(default_config_yaml):
+            print("Default directory created.")
+            print(f"Please edit the config at {default_config_yaml} and run 'pastaquote setup' again.")
+            sys.exit()
+        else:
+            print("Python didn't throw up an exception when trying to create")
+            print(f"a directory at {DEFAULT_CONFIG}, but it still doesn't exist")
+            print("Honestly not sure what's going on.")
+            sys.exit()
+    elif not args.config_dest and os.path.exists(DEFAULT_CONFIG):
+        config_location = default_config_yaml
+    elif args.config_dest:
+        config_location = args.config_dest
     try:
-        set_config_path(args.config_dest)
-        destinations = list(platform_config())
-        options = pull_config('SETUP')
+        set_config_path(config_location)
         data_path = data_dir()
         setup_logging(data_path) 
+        destinations = list(platform_config())
+        options = pull_config('SETUP')
         check_and_route(args, options, data_path, destinations)
     except Exception:
         print(traceback.format_exc())
-        logging.exception("Something went wrong...")
+        log.exception("Something went wrong...")
 
 # TODO: Subprocess updater with argparser

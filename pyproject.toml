@@ -16,3 +16,6 @@ requires-python = ">=3.13,<3.15"
 
 [project.scripts]
 pastaquote = "pastaquote.bot:main"
+
+[tool.setuptools.package-data]
+pastaquote = ["config.sample.yaml"]

@@ -30,6 +30,7 @@ setup_p.add_argument('-t', '--token', help="(optional) paste Threads auth token 
                       dest="token_paste", type=str, action="store")
 sub.add_parser('post', help="posts the next item in the list")
 sub.add_parser('update', help="Checks and installs updates from Github if you installed via uv.")
+sub.add_parser('cron', help="Generates a sample crontab with your system-specific paths.")
 add_p = sub.add_parser('add-lines', help="adds items to running list")
 add_p.add_argument('-y', '--yes', help="(optional) approve additions to list without review",\
                     action='store_true')
@@ -49,10 +50,22 @@ def make_pickle(p_path):
     initial_num = 0
     pickle.dump(initial_num, open(p_path,"wb"))
 
+## Generate crontab for user
+
+def gen_cron(config_location):
+    divider = f"\n{'#' * 24}\n"
+    pasta = shutil.which("pastaquote")
+    print("Here is a sample cronjob you can copy/paste into your crontab (crontab -e).")
+    print("This will run every hour, on the hour.")
+    print("If you're not familiar, a service like https://crontab.guru is helpful for figuring out the cron scheduling format.")
+    print(divider)
+    print(f"0 * * * * {pasta} --config {config_location} post\n")
+    print(divider)
+
 ## Check to see if threads is enabled/present and, if so, check the token
 ## if token doesn't exist, it attempts to fetch it based on auth code
 
-def check_threads_token(data_directory, init=False, code=None):
+def check_threads_token(init=False, code=None):
     try:
         threads_check = pull_config('PLATFORMS')['THREADS']
     except KeyError:
@@ -61,7 +74,7 @@ def check_threads_token(data_directory, init=False, code=None):
         return
     if init != "init" and not threads_check.get('ENABLE_PLATFORM'):
         return
-    threads = Threads(data_directory)
+    threads = Threads()
     if not os.path.isfile(threads.threads_token):
         msg = "Threads token not present. Attempting to generate."
         log.info(msg)
@@ -99,7 +112,7 @@ def post_with_api(tweet, platform_to_post, data_directory, options):
         formatted_post = tweet_types.add_hashtags(tweet, platform_to_post)
         log.info("Attempting post: %s", formatted_post)
         try:
-            platform_class = platform_name(data_directory)
+            platform_class = platform_name()
             post_id = platform_class.post_it(formatted_post)
             log.info("%s posted successfully: %s", platform_to_post, post_id)
         except Exception:
@@ -152,7 +165,7 @@ def self_updater():
 
 ## This is the main controller and what gets called every time by main().
 
-def check_and_route(args, options, data_directory, destinations):
+def check_and_route(args, options, data_directory, destinations, config_location):
     runlist = RunList(data_directory, options['LIST_LOCATION'])
     #checks where your list is saved and exits if 'sequential' or 'random' is not explicit
     p_path = Path(data_directory) / "number.p"
@@ -181,10 +194,11 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
             log.info("Numbering started and set to zero.")
         msg = "List ready for posting."
         log.info(msg)
-        check_threads_token(data_directory, init=True)
+        gen_cron(config_location)
+        check_threads_token(init=True, code=args.token_paste)
     #authenticates and tweets
     if args.command == 'post':
-        check_threads_token(data_directory, init=False)
+        check_threads_token()
         choose_post_type(options, data_directory, destinations)
     if args.command == 'add-lines':
         if options['TYPE'] == 'random':
@@ -200,8 +214,10 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         update_response = self_updater()
         log.info(update_response)
         print(update_response)
+    if args.command == "cron":
+        gen_cron(config_location)
     if args.command == 'threads-token':
-        check_threads_token(data_directory, init=True, code=args.token_paste)
+        check_threads_token(init=True, code=args.token_paste)
 
 def main():
     args = parser.parse_args()
@@ -234,9 +250,9 @@ def main():
         setup_logging(data_path) 
         destinations = list(platform_config())
         options = pull_config('SETUP')
-        check_and_route(args, options, data_path, destinations)
+        check_and_route(args, options, data_path, destinations, config_location)
     except Exception:
         print(traceback.format_exc())
         log.exception("Something went wrong...")
 
-# TODO: Subprocess updater with argparser
+# TODO: Add crontab scheduler as specified in config.yaml

@@ -65,7 +65,7 @@ def gen_cron(config_location):
 ## Check to see if threads is enabled/present and, if so, check the token
 ## if token doesn't exist, it attempts to fetch it based on auth code
 
-def check_threads_token(init=False, code=None):
+def check_threads_token(data_directory, init=False, code=None):
     try:
         threads_check = pull_config('PLATFORMS')['THREADS']
     except KeyError:
@@ -74,7 +74,7 @@ def check_threads_token(init=False, code=None):
         return
     if init != "init" and not threads_check.get('ENABLE_PLATFORM'):
         return
-    threads = Threads()
+    threads = Threads(data_directory)
     if not os.path.isfile(threads.threads_token):
         msg = "Threads token not present. Attempting to generate."
         log.info(msg)
@@ -195,10 +195,10 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
         msg = "List ready for posting."
         log.info(msg)
         gen_cron(config_location)
-        check_threads_token(init=True, code=args.token_paste)
+        check_threads_token(data_directory, init=True, code=args.token_paste)
     #authenticates and tweets
     if args.command == 'post':
-        check_threads_token()
+        check_threads_token(data_directory)
         choose_post_type(options, data_directory, destinations)
     if args.command == 'add-lines':
         if options['TYPE'] == 'random':
@@ -217,7 +217,7 @@ to the webpage or the file doesn't exist. Please fix this and run again."""
     if args.command == "cron":
         gen_cron(config_location)
     if args.command == 'threads-token':
-        check_threads_token(init=True, code=args.token_paste)
+        check_threads_token(data_directory, init=True, code=args.token_paste)
 
 def main():
     args = parser.parse_args()

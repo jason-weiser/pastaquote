@@ -218,14 +218,19 @@ PLATFORMS:
 ```sh
 pastaquote setup
 ```
+> [!TIP]
+> Pastaquote runs via cronjob, and `pastaquote setup` ends with a sample crontab generated using your specific path/config. Copy and save that line for scheduling.
+
 ### If that didn't throw out any errors, try your first post!
 ```sh
 pastaquote post
 ```
 ### You schedule via cronjob, so you do that how many times a day you want with the following text. This will be for every hour, for example.
 
+Cron runs with a minimal path and likely doesn't have the `pastaquote` command, so please copy/paste the generated cronjob when you ran setup or `pastaquote cron`. This is a sample - please edit based on your paths.
+
 ```sh
-01 */1 * * * pastaquote post`
+01 * * * * /home/YOUR-USERNAME/.local/bin/pastaquote post`
 ```
 
 ## Adding quotes to the bot

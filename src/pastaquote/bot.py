@@ -112,7 +112,7 @@ def post_with_api(tweet, platform_to_post, data_directory, options):
         formatted_post = tweet_types.add_hashtags(tweet, platform_to_post)
         log.info("Attempting post: %s", formatted_post)
         try:
-            platform_class = platform_name()
+            platform_class = platform_name(data_directory)
             post_id = platform_class.post_it(formatted_post)
             log.info("%s posted successfully: %s", platform_to_post, post_id)
         except Exception:

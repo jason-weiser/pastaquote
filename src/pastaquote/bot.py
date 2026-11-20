@@ -14,7 +14,7 @@ from pathlib import Path
 from pastaquote.config import set_config_path, pull_config, platform_config, data_dir
 from pastaquote import tweet_types
 from pastaquote.useful_resources import connection_validator, parent_dir, setup_logging
-from pastaquote.platforms import Masto, Bluesky, Threads
+from pastaquote.platforms import Mastodon, Bluesky, Threads
 from pastaquote.run_list import RunList
 DEFAULT_CONFIG = Path.home() / ".config" / "pastaquote"
 
@@ -94,7 +94,7 @@ def check_threads_token(data_directory, init=False, code=None):
 def post_with_api(tweet, platform_to_post, data_directory, options):
     runlist = RunList(data_directory, options['LIST_LOCATION'])
     platform_dict = {
-        'MASTODON': Masto,
+        'MASTODON': Mastodon,
         'BLUESKY': Bluesky,
         'THREADS': Threads
     }
@@ -112,7 +112,7 @@ def post_with_api(tweet, platform_to_post, data_directory, options):
         formatted_post = tweet_types.add_hashtags(tweet, platform_to_post)
         log.info("Attempting post: %s", formatted_post)
         try:
-            platform_class = platform_name(data_directory)
+            platform_class = platform_name(data_directory, platform_to_post)
             post_id = platform_class.post_it(formatted_post)
             log.info("%s posted successfully: %s", platform_to_post, post_id)
         except Exception:

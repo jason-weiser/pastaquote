@@ -49,8 +49,8 @@ class Bluesky(Platform):
 ## What makes the magic happen re:Threads
 class Threads(Platform):
     def __init__(self, data_dir, platform):
-        super().__init__(data_dir)
-        self.threads_token = self.data_dir / threads_token.json
+        super().__init__(data_dir, platform)
+        self.threads_token = self.data_dir / "threads_token.json"
 
     def load_threads_token(self):
         with open(self.threads_token) as f:

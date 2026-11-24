@@ -13,44 +13,50 @@ from atproto import Client
 #logs
 log = logging.getLogger(__name__)
 
-## What makes the magic happen re:toots
-class Masto:
-    def __init__(self, parent):
-        self.cred = get_platform_creds('MASTODON')
-        self.api_url = '{}/api/v1/statuses'.format(self.cred['MASTO_BASE_URL'])
+# Parent class
+class Platform:
+    def __init__(self, data_dir, platform):
+        self.cred = get_platform_creds(platform)
+        self.data_dir = Path(data_dir)
+    
+    def post_it(self):
+        raise NotImplementedError("post_it() shouldn't be called like this. Only call with subclass.")
 
+## What makes the magic happen re:toots
+class Mastodon(Platform):
     def post_it(self, status):
+        api_url = '{}/api/v1/statuses'.format(self.cred['MASTO_BASE_URL'])
         auth = {
             'Authorization': 'Bearer {}'.format(self.cred['MASTO_ACCESS_TOKEN'])
         }
         parameters = {
             'status': status
         }
-        resp = requests.post(self.api_url, data=parameters, headers=auth)
+        resp = requests.post(api_url, data=parameters, headers=auth)
         status = resp.status_code
         return(status)
+
 ## What makes the magic happen re:skeets    
-class Bluesky:
-    def __init__(self, parent):
-        self.cred = get_platform_creds('BLUESKY')
-    client = Client()
+class Bluesky(Platform):
     def post_it(self, status):
+        client = Client()
         user_name = self.cred['USERNAME']
         password = self.cred['PASSWORD']
-        self.client.login(user_name, password)
-        post = self.client.send_post(text=status)
+        client.login(user_name, password)
+        post = client.send_post(text=status)
         return post.uri
+
 ## What makes the magic happen re:Threads
-class Threads:
-    def __init__(self, parent):
-        self.parent_dir = parent
-        self.cred = get_platform_creds('THREADS')
-        self.threads_token = Path(self.parent_dir, "threads_token.json")
+class Threads(Platform):
+    def __init__(self, data_dir, platform):
+        super().__init__(data_dir)
+        self.threads_token = self.data_dir / threads_token.json
 
     def load_threads_token(self):
         with open(self.threads_token) as f:
             return json.load(f)
-    # Replaces the Threads auth token with the value passed for 'token'. For use in the next functions.
+
+    ### Replaces the Threads auth token with the value passed for 'token'. For use in the next functions.
     def save_threads_token(self, token):
         with open(self.threads_token, "w") as f:
             json.dump(
@@ -59,7 +65,8 @@ class Threads:
                     "refreshed_at": time.time()
                 }, f
             )
-    # first-time generation of Threads token, requiring long authorization code. See README.
+
+    ### first-time generation of Threads token, requiring long authorization code. See README.
     def get_first_threads_token(self, code=None):
         if not code:
             code = self.cred.get('CODE')
@@ -97,6 +104,9 @@ class Threads:
         print(msg)
         log.info(msg)
 
+    ### Gets called every time Threads is an approved platform
+    ### Pulls the token text if it exists and is not older than 7 days.
+    ### If token is older than seven days, it attempts a renewal.
     def get_valid_threads_token(self):
         th_json_data = self.load_threads_token()
         age_days = (time.time() - th_json_data["refreshed_at"]) / 86400
@@ -124,7 +134,8 @@ class Threads:
             "media_type": "TEXT",
             "text": status
             }
-        # create the container
+
+        ##### create the container
         r = requests.post(
             "{}/{}/threads".format(threads_url, threads_id),params=params)
         try:
@@ -133,9 +144,9 @@ class Threads:
             log.error("Threads API error: %s", r.text)
             raise
         container_id = r.json()["id"]
-        # Pausing for 5 seconds because Meta apparently recommends some pause between the container/publish API calls
+        ##### Pausing for 5 seconds because Meta apparently recommends some pause between the container/publish API calls
         time.sleep(5)
-        # now try to post the container.
+        ##### now try to post the container.
         r = requests.post("{}/{}/threads_publish".format(threads_url,threads_id),
                             params= {
                                 "creation_id": container_id,
@@ -148,5 +159,3 @@ class Threads:
             log.error("Threads API error: %s", r.text)
             raise
         return f"Post id: {r.json()["id"]}"
-
-#TODO: change Threads token location to new data folder!

@@ -74,7 +74,7 @@ def check_threads_token(data_directory, init=False, code=None):
         return
     if init != "init" and not threads_check.get('ENABLE_PLATFORM'):
         return
-    threads = Threads(data_directory)
+    threads = Threads(data_directory, 'THREADS')
     if not os.path.isfile(threads.threads_token):
         msg = "Threads token not present. Attempting to generate."
         log.info(msg)
